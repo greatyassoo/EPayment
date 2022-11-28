@@ -2,8 +2,8 @@ public class LoginHandlerProxy implements LoginHandler{
     
     private boolean validateUser(String uName, String password){
         try{FileManagement.GetInstance().LogIn(uName, password);}
-        catch(Exception e) {return false;} // if login throws exception then validate returns false;
-        return true; // if no exception happens then true
+        catch(Exception e) {return true;} // if login throws exception then validate returns true;
+        return false; // if no exception happens then false
     }
 
 	@Override
@@ -17,10 +17,13 @@ public class LoginHandlerProxy implements LoginHandler{
 
     @Override
     public Account LogIn(String uName, String password) throws Exception{
-        if(validateUser(uName, password)){
-            return FileManagement.GetInstance().LogIn(uName, password);
+        if(!validateUser(uName, password)){
+            return null;
         }
-        return null;
+        
+
+
+        return FileManagement.GetInstance().LogIn(uName, password);
     }
 
 }
