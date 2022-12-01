@@ -3,8 +3,44 @@ import java.util.LinkedList;
 
 public class Main {
     public static void main(String[] args) {
-        AccountsFetcher accountsFetcher = new AccountsFetcher();
-        ServicesController servicesController = new ServicesController();
+        Account tAccount = new Account("","");
+
+        LinkedList<Service> services = new LinkedList<Service>();
+        LinkedList<Account> accounts = new LinkedList<Account>();
+
+
+        AccountsFetcher accountsFetcher = new AccountsFetcher(accounts);
+        ServicesController servicesController = new UserController(services,tAccount);
+
+        LoginTerminal terminal = new LoginTerminal(accountsFetcher);
+        Account account = new Account("youssef", "123", "yahoo.com", "123456");
+        Account admin = new Account("admin", "admin");
+        Account noAccount = new Account("lol", "fuck u");
+
+        if(terminal.signUp(account)){
+            System.out.println("first signUp success");
+        }
+        else{
+            System.out.println("Fku");
+        }
+
+        Account temp = terminal.logIn(noAccount);
+        if(temp !=null ){
+            System.out.println(temp.getUserName());
+        }
+        else{
+            System.out.println("Fku");
+        }
+        
+
+
+
+
+
+
+
+        
+
         
 
 

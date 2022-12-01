@@ -1,8 +1,9 @@
-// import java.util.LinkedList;
+import java.util.LinkedList;
 
-// public class UserController extends ServicesController{
-//     UserController(LinkedList<Service> services , LinkedList<Account> accounts){
-//         this.services=services;
-//         this.accounts=accounts;
-//     }
-// }
+public class UserController extends ServicesController{
+
+    UserController(LinkedList<Service> services , Account account){
+        this.services=services;
+        this.account=account;
+    }
+}

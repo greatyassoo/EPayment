@@ -1,11 +1,8 @@
 import java.util.LinkedList;
 
-public class ServicesController {
+public abstract class ServicesController {
     protected LinkedList<Service> services;
-
-    ServicesController(){
-        services = new LinkedList<Service>();
-    }
+    protected Account account;
 
     public LinkedList<Service> searchServices(String name){
         LinkedList<Service> temp = new LinkedList<Service>();

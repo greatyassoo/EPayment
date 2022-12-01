@@ -1,28 +1,28 @@
 import java.util.LinkedList;
 
-public class AccountsFetcher {
+public class AccountsFetcher implements AccountAuthentication{
     private LinkedList<Account> accounts;
 
-    AccountsFetcher(){
-        accounts = new LinkedList<Account>();
+    AccountsFetcher(LinkedList<Account> accounts){
+        this.accounts = accounts;
     }
 
-    public Account Login(String uName , String password){ 
+    public Account login(String uName , String password){ 
         for(int i=0 ; i<accounts.size() ; i++){
-            if(accounts.get(i).name==uName && accounts.get(i).password==password){
+            if(accounts.get(i).getUserName() == uName && accounts.get(i).getPassword() == password){
                 return accounts.get(i);
             }
         }
         return null;
     }
-    public boolean SignUp(Account account){
-        try{
-            accounts.add(account);
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
+
+    public boolean signUp(Account account){
+        accounts.add(account);
+        return true;
     }
+
+    public Account getAccount(int index) {
+        return accounts.get(index);
+    }
+    public int getSize() {return accounts.size();}
 }
