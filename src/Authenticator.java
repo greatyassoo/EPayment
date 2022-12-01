@@ -1,18 +1,18 @@
 
 public class Authenticator implements AccountAuthentication{
     private AccountsFetcher accountsFetcher;
-    public static final String ADMIN_NAME = "admin", ADMIN_PASSWORD = "admin";
+    private final String ADMIN_NAME = "admin", ADMIN_PASSWORD = "admin";
 
     Authenticator(AccountsFetcher accountsFetcher){
         this.accountsFetcher=accountsFetcher;
     }
 
     private int authenticateLogin(String userName, String password) { // -1 for error, 0 for admin, 1 for user.
-        if (userName.equals(ADMIN_NAME) && password.equals(ADMIN_PASSWORD))
+        if (userName == ADMIN_NAME && password == ADMIN_PASSWORD)
             return 0; // admin
 
         for(int i = 0; i < accountsFetcher.getSize(); i++){
-            if(accountsFetcher.getAccount(i).getUserName().equals(userName) && accountsFetcher.getAccount(i).getPassword().equals(password))
+            if(accountsFetcher.getAccount(i).getUserName() == userName && accountsFetcher.getAccount(i).getPassword() == password)
                 return 1; // user
         }
         return -1; // error
@@ -20,7 +20,7 @@ public class Authenticator implements AccountAuthentication{
 
     private boolean authenticateSignup(Account account){
         for(int i = 0; i < accountsFetcher.getSize(); i++){
-            if(account.getUserName().equals(ADMIN_NAME) || accountsFetcher.getAccount(i).getUserName().equals(account.getUserName()))
+            if(account.getUserName() == ADMIN_NAME || accountsFetcher.getAccount(i).getUserName() == account.getUserName())
                 return false;
         }
         return true;
