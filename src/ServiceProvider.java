@@ -1,7 +1,7 @@
-public class FormHandler {
+public class ServiceProvider {
     public String name;
     public Form form;
-    FormHandler(String name,Form form){
+    ServiceProvider(String name,Form form){
         this.name=name;
         this.form=form;
     }
