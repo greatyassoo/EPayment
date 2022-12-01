@@ -1,6 +1,6 @@
 
 
-ublic class Wallet implements Payment{
+public class Wallet implements Payment{
 
     @Override
     public boolean Pay(int amount) {
