@@ -18,7 +18,7 @@ public abstract class ServicesController {
     public int getServiceIndex(String sName) {
     	for(int i=0 ; i<services.size();i++)
     	{
-    		if(this.services.get(i).getName()==sName)
+    		if(this.services.get(i).getName().equals(sName))
     		{
     			return i;
     		}
