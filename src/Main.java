@@ -1,5 +1,4 @@
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -31,6 +30,7 @@ public class Main {
         else{
             System.out.println("Fku");
         }
+        
         
 
 

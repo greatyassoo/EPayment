@@ -14,6 +14,6 @@ public abstract class ServicesController {
     }
 
     public LinkedList<Service> getServices(){return services;}
-    public LinkedList<FormHandler> getServiceProviders(Service service){return service.getServiceProviders();}
+    public LinkedList<ServiceProvider> getServiceProviders(Service service){return service.getServiceProviders();}
 
 }
