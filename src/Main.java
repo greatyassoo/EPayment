@@ -23,7 +23,7 @@ public class Main {
             System.out.println("Fku");
         }
 
-        Account temp = terminal.logIn(noAccount);
+        Account temp = terminal.logIn(admin);
         if(temp !=null ){
             System.out.println(temp.getUserName());
         }
