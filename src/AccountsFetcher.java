@@ -9,7 +9,7 @@ public class AccountsFetcher implements AccountAuthentication{
 
     public Account login(String uName , String password){ 
         for(int i=0 ; i<accounts.size() ; i++){
-            if(accounts.get(i).getUserName().equals(uName) && accounts.get(i).getPassword().equals(password)){
+            if(accounts.get(i).getUserName() == uName && accounts.get(i).getPassword() == password){
                 return accounts.get(i);
             }
         }
@@ -24,8 +24,5 @@ public class AccountsFetcher implements AccountAuthentication{
     public Account getAccount(int index) {
         return accounts.get(index);
     }
-    public int getSize() {
-        try {return accounts.size();}
-        catch (Exception e) {return 0;}
-    }
+    public int getSize() {return accounts.size();}
 }
