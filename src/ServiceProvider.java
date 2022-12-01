@@ -9,4 +9,6 @@ public class ServiceProvider {
     public void setPaymentMethod(Payment py){
         this.paymMethod=py;
     }
+
+    public String getName(){return name;}
 }

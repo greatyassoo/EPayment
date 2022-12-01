@@ -2,9 +2,10 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class UserTerminal {
-    UserController controller ;
-    Account account;
-    
+    private UserController controller ;
+    private Account account;
+    private String currentService,currentServiceProvider;
+
     UserTerminal(LinkedList<Service> services , Account account){
         this.controller = new UserController(services, account);
         this.account=account;
@@ -20,14 +21,23 @@ public class UserTerminal {
     
             System.out.print("===================\n");
             switch(choice){
-                case "1" : searchService();
-                           showServiceProviders();
+                case "1" : String serviceName;
+                           try {
+                            serviceName = searchService();
+                            showServiceProviders(serviceName);
+                            } 
+                           catch (ServiceNameException ex) {System.out.print(ex+" is an invalid Service name name.\n");break;}
+                           catch (ServiceProviderNameException ex){System.out.print(ex+" is an invalid service provider name.\n");}
 
+                           
                            break;
     
-                case "2" :showServicesNames();
-                          
-                          break;
+                case "2" : try {showServiceProviders(showServicesNames());} 
+                           catch (ServiceNameException ex) {System.out.print(ex+" is an invalid Service name name.\n");break;}
+                           catch (ServiceProviderNameException ex){System.out.print(ex+" is an invalid service provider name.\n");}
+                           
+
+                           break;
     
                 case "3" : fundAccount();
                            break;
@@ -39,35 +49,46 @@ public class UserTerminal {
         }while(true);
     }
 
-    public void searchService(){
+    public String searchService() throws ServiceNameException{
         System.out.print("Enter Service name: ");
-        String serviceName = new Scanner(System.in).nextLine();
-        LinkedList<Service> found = controller.getServices(serviceName);
-        showServicesNames(found);
+        currentService = new Scanner(System.in).nextLine();
+
+        LinkedList<String> servicesNames = controller.getServices(currentService);
+        for(int i=0 ; i<servicesNames.size() ; i++)
+            System.out.print((i+1)+"-"+servicesNames.get(i)+".\n");
+
+        System.out.print("Enter Service name: ");
+        currentService = new Scanner(System.in).nextLine();
+
+        if(!servicesNames.contains(currentService)){
+            throw new ServiceNameException(currentService);
+        }
+        return currentService;
     }
 
-    public void showServicesNames(){
+    public String showServicesNames() throws ServiceNameException{
         LinkedList<String> servicesNames = controller.getServicesNames();
-        for(int i=0 ; i<servicesNames.size() ; i++){
-            System.out.print((i+1)+"-"+servicesNames.get(i)+".");
-        }
-    }
+        for(int i=0 ; i<servicesNames.size() ; i++)
+            System.out.print((i+1)+"-"+servicesNames.get(i)+".\n");
 
-    public void showServicesNames(LinkedList<Service> servicesNames){
-        for(int i=0 ; i<servicesNames.size() ; i++){
-            System.out.print((i+1)+"-"+servicesNames.get(i)+".");
-        }
-    }
-
-    public void showServiceProviders(Service service){
-        LinkedList<ServiceProvider> serviceProviders = service.getServiceProviders();
-    }
-
-    public void showServiceProviders(){
         System.out.print("Enter selected service name: ");
-        String serviceName = new Scanner(System.in).nextLine();
-        controller.getServiceProviders(controller.getService(serviceName));
+        currentService = new Scanner(System.in).nextLine();
+        
+        if(!servicesNames.contains(currentService))
+            throw new ServiceNameException(currentService);    
+        return currentService;
+    }
 
+    public void showServiceProviders(String service) throws ServiceProviderNameException{
+        LinkedList<String> serviceProviders = controller.getServiceProviders(service);
+        for(int i=0 ; i<serviceProviders.size() ; i++){
+            System.out.print((i+1)+"-"+serviceProviders.get(i)+".\n");
+        }
+        System.out.print("===================\nEnter Service Provider name: ");
+        currentServiceProvider = new Scanner(System.in).nextLine();
+        if(!serviceProviders.contains(currentServiceProvider))
+            throw new ServiceProviderNameException(currentServiceProvider);
+        
     }
 
     public void fundAccount(){

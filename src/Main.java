@@ -8,19 +8,28 @@ public class Main {
         services = new LinkedList<Service>();
         accounts = new LinkedList<Account>();
 
+        LinkedList<ServiceProvider> sp1 = new LinkedList<ServiceProvider>();
+        sp1.addLast(new ServiceProvider("Vodafone", null));
+        sp1.addLast(new ServiceProvider("Etisalat", null));
+        sp1.addLast(new ServiceProvider("Orange", null));
+        sp1.addLast(new ServiceProvider("WE", null));
+
+        Service s1 = new Service("Mobile Recharge", 10, 5, sp1);
+        services.addLast(s1);
+
+
+
         AccountsFetcher accountsFetcher = new AccountsFetcher(accounts);
         LoginTerminal terminal = new LoginTerminal(accountsFetcher);
-        while(true){            Scanner scanner = new Scanner(System.in);
-
+        while(true){            
+            Scanner scanner = new Scanner(System.in);
             System.out.print("===================\n1-Login.\n2-SignUp.\n3-Exit\n===================\nChoice: ");
             String answer = scanner.nextLine();
-            
-            ////scanner.close();
 
             if(answer.equals("1")){
                 Account tAccount = terminal.logIn();
                 if(tAccount==null)
-                    System.out.println("Wrong info.");
+                    System.out.println("Wrong info/User doesn't exist.");
                 else if(tAccount.getUserName().equals(Authenticator.ADMIN_NAME))
                     Admin();
                 else
