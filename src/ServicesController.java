@@ -12,8 +12,18 @@ public abstract class ServicesController {
         }
         return temp;
     }
-
+    
     public LinkedList<Service> getServices(){return services;}
-    public LinkedList<FormHandler> getServiceProviders(Service service){return service.getServiceProviders();}
+    public LinkedList<ServiceProvider> getServiceProviders(Service service){return service.getServiceProviders();}
+    public int getServiceIndex(String sName) {
+    	for(int i=0 ; i<services.size();i++)
+    	{
+    		if(this.services.get(i).getName().equals(sName))
+    		{
+    			return i;
+    		}
+    	}
+    	return -1;
+    }
 
 }

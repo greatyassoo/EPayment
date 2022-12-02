@@ -4,9 +4,11 @@ public class Service {
     private String name;
     private double initialDiscount=0;
     private double serviceDiscount=0;
-    private LinkedList<FormHandler> serviceProviders;
+    private LinkedList<ServiceProvider> serviceProviders;
 
-    Service(String name, double initialDiscount , double serviceDiscount , LinkedList<FormHandler> serviceProviders){
+    Service(){}
+    
+    Service(String name, double initialDiscount , double serviceDiscount , LinkedList<ServiceProvider> serviceProviders){
         this.name=name;
         this.initialDiscount=initialDiscount;
         this.serviceDiscount=serviceDiscount;
@@ -15,11 +17,11 @@ public class Service {
 
     //setters
     public void setName(String name){this.name=name;}
-    public void setInitialDiscount(Double initialDiscount){this.initialDiscount=initialDiscount;}
-    public void setServiceDiscount(Double serviceDiscount){this.serviceDiscount=serviceDiscount;}
+    public void setInitialDiscount(double initialDiscount){this.initialDiscount=initialDiscount;}
+    public void setServiceDiscount(double serviceDiscount){this.serviceDiscount=serviceDiscount;}
     
-    public boolean addServiceProvider(FormHandler formHandler){
-        try {serviceProviders.addLast(formHandler);} 
+    public boolean addServiceProvider(ServiceProvider serviceProvider){
+        try {serviceProviders.addLast(serviceProvider);} 	
         catch (Exception e) {return false;}
         return true;
     }
@@ -31,8 +33,8 @@ public class Service {
 
     //getters
     public String getName(){return name;}
-    public Double getInitialDiscount(){return initialDiscount;}
-    public Double getServiceDiscount(){return serviceDiscount;}
-    public LinkedList<FormHandler> getServiceProviders(){return serviceProviders;}
+    public double getInitialDiscount(){return initialDiscount;}
+    public double getServiceDiscount(){return serviceDiscount;}
+    public LinkedList<ServiceProvider> getServiceProviders(){return serviceProviders;}
 
 }

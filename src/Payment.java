@@ -1,3 +1,3 @@
 public interface Payment {
-    public abstract boolean Pay(int amount);
+    public abstract boolean Pay(Double amount);
 }
