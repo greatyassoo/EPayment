@@ -1,68 +1,99 @@
 import java.util.*;
 
 public class Main {
-    private static LinkedList<Service> services;
-    private static LinkedList<Account> accounts;
-
+    
+    
+    
+    
     public static void main(String[] args) {
-        services = new LinkedList<Service>();
-        accounts = new LinkedList<Account>();
 
-        accounts.addLast(new Account("test", "test"));
-
-        LinkedList<ServiceProvider> sp1 = new LinkedList<ServiceProvider>();
-        sp1.addLast(new ServiceProvider("Vodafone", null));
-        sp1.addLast(new ServiceProvider("Etisalat", null));
-        sp1.addLast(new ServiceProvider("Orange", null));
-        sp1.addLast(new ServiceProvider("WE", null));
         
-        Service s1 = new Service("Mobile Recharge", 10, 5, sp1);
-        services.addLast(s1);
+        LinkedList<ServiceProvider> serviceproviders = new LinkedList<ServiceProvider>();
+        serviceproviders.add(new ServiceProvider("vodafone"));
+        serviceproviders.add(new ServiceProvider("Etisalat"));
         
-        AccountsFetcher accountsFetcher = new AccountsFetcher(accounts);
 
-        Admin();
+        LinkedList<Service> services = new LinkedList<Service>();
+        services.add(new Service("Mobile Recharge", 10,10, serviceproviders));
 
-        LoginTerminal terminal = new LoginTerminal(accountsFetcher);
-        while(true){            
-            System.out.print("===================\n1-Login.\n2-SignUp.\n3-Exit\n===================\nChoice: ");
-            String answer = SingleScanner.getInstance().nextLine();
+        //Service landline = new Service("Landline", 10, 10,serviceProviders);
 
-            if(answer.equals("1")){
-                Account tAccount = terminal.logIn();
-                if(tAccount==null)
-                    System.out.println("Wrong info/User doesn't exist.");
-                else if(tAccount.getUserName().equals(Authenticator.ADMIN_NAME))
-                    Admin();
-                else
-                    User(tAccount);
-            }
-            else if(answer.equals("2")){
-                if(terminal.signUp())
-                    System.out.println("Account created successfully !!");
-                else
-                    System.out.println("Error Account invalid.");
-            }
-            else if(answer.equals("3")){
-                SingleScanner.getInstance().close();
-                return;
-            }
-            else{
-                System.out.println("Please Enter a valid choice.");
-            }
-        }
 
-    }
+
+        UserController controller = new UserController(services, new Account("Youssef", "123"));
+        controller.pay("Mobile Recharge", "vodafone");
+        
+    }    
     
-    private static void User(Account account){
-        UserTerminal terminal = new UserTerminal(services,account);
-        terminal.showOptions();
-    }
     
-    private static void Admin(){
-        AdminTerminal terminal = new AdminTerminal(services,accounts);
-        terminal.showOptions();
-    }
+    
+    
+    
+    
+    
+    
+    // private static LinkedList<Service> services;
+    // private static LinkedList<Account> accounts;
+
+    // public static void main(String[] args) {
+    //     services = new LinkedList<Service>();
+    //     accounts = new LinkedList<Account>();
+
+    //     accounts.addLast(new Account("test", "test"));
+
+    //     LinkedList<ServiceProvider> sp1 = new LinkedList<ServiceProvider>();
+    //     sp1.addLast(new ServiceProvider("Vodafone", null));
+    //     sp1.addLast(new ServiceProvider("Etisalat", null));
+    //     sp1.addLast(new ServiceProvider("Orange", null));
+    //     sp1.addLast(new ServiceProvider("WE", null));
+        
+    //     Service s1 = new Service("Mobile Recharge", 10, 5, sp1);
+    //     services.addLast(s1);
+        
+    //     AccountsFetcher accountsFetcher = new AccountsFetcher(accounts);
+
+    //     Admin();
+
+    //     LoginTerminal terminal = new LoginTerminal(accountsFetcher);
+    //     while(true){            
+    //         System.out.print("===================\n1-Login.\n2-SignUp.\n3-Exit\n===================\nChoice: ");
+    //         String answer = SingleScanner.getInstance().nextLine();
+
+    //         if(answer.equals("1")){
+    //             Account tAccount = terminal.logIn();
+    //             if(tAccount==null)
+    //                 System.out.println("Wrong info/User doesn't exist.");
+    //             else if(tAccount.getUserName().equals(Authenticator.ADMIN_NAME))
+    //                 Admin();
+    //             else
+    //                 User(tAccount);
+    //         }
+    //         else if(answer.equals("2")){
+    //             if(terminal.signUp())
+    //                 System.out.println("Account created successfully !!");
+    //             else
+    //                 System.out.println("Error Account invalid.");
+    //         }
+    //         else if(answer.equals("3")){
+    //             SingleScanner.getInstance().close();
+    //             return;
+    //         }
+    //         else{
+    //             System.out.println("Please Enter a valid choice.");
+    //         }
+    //     }
+
+    // }
+    
+    // private static void User(Account account){
+    //     UserTerminal terminal = new UserTerminal(services,account);
+    //     terminal.showOptions();
+    // }
+    
+    // private static void Admin(){
+    //     AdminTerminal terminal = new AdminTerminal(services,accounts);
+    //     terminal.showOptions();
+    // }
 }
         
 

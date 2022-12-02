@@ -1,17 +1,17 @@
 import java.util.LinkedList;
 
-public class UserController extends ServicesController{
+    public class UserController extends ServicesController{
 
     private Account account;
 
     UserController(LinkedList<Service> services , Account account){
-        this.services=services;
-        this.account=account;
+        this.services = services;
+        this.account = account;
     }
 
     public boolean fundAccount(String CCN , String PIN , double ammount){
         account.setWalletBalance(account.getWalletBalance()+ammount);
-        return true;
+        return true; //TODO: Why is this bool
     }
 
     public LinkedList<String> getServicesNames(){
@@ -56,5 +56,11 @@ public class UserController extends ServicesController{
         }
         account.addRefundRequest(indx);
         return true;
+    }
+
+    // testing 
+    public void pay(String serviceName, String serviceProviderName){
+        getService(serviceName).initForm(serviceProviderName);
+
     }
 }

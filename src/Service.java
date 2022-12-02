@@ -7,13 +7,13 @@ public class Service {
     private LinkedList<ServiceProvider> serviceProviders;   
     private Form form;
 
-    Service(){}
+    //Service(){}
     
     Service(String name, double initialDiscount , double serviceDiscount , LinkedList<ServiceProvider> serviceProviders){
-        this.name=name;
-        this.initialDiscount=initialDiscount;
-        this.serviceDiscount=serviceDiscount;
-        this.serviceProviders=serviceProviders;
+        this.name = name;
+        this.initialDiscount = initialDiscount;
+        this.serviceDiscount = serviceDiscount;
+        this.serviceProviders = serviceProviders;
         this.form = new Form();
     }
 
@@ -38,5 +38,6 @@ public class Service {
     public double getInitialDiscount(){return initialDiscount;}
     public double getServiceDiscount(){return serviceDiscount;}
     public LinkedList<ServiceProvider> getServiceProviders(){return serviceProviders;}
+    public void initForm(String serviceProviderName) {form.displayForm(name, serviceProviderName);}
 
 }

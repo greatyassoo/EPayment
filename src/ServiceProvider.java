@@ -1,4 +1,5 @@
-public class ServiceProvider {
+    public class ServiceProvider {
+        
     private String name;
     private PaymentStrategy paymentStrategy;
 
@@ -7,6 +8,7 @@ public class ServiceProvider {
         this.name = name; 
         this.paymentStrategy = paymentStrategy;
     }
+    public ServiceProvider(String name) {this.name = name;}
 
     // setters
     public void setName(String name) {this.name = name;}
