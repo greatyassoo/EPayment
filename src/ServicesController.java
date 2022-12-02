@@ -3,7 +3,7 @@ import java.util.LinkedList;
 public abstract class ServicesController {
     protected LinkedList<Service> services;
 
-    public LinkedList<String> getServices(String serviceName){
+    public LinkedList<String> getServicesNames(String serviceName){
         LinkedList<String> temp = new LinkedList<String>();
         for(int i=0 ; i<services.size() ; i++){
             if(services.get(i).getName().toLowerCase().contains(serviceName.toLowerCase()))
@@ -28,7 +28,6 @@ public abstract class ServicesController {
         return temp;
     }
 
-    
     public LinkedList<Service> getServices(){return services;}
     public LinkedList<ServiceProvider> getServiceProviders(Service service){return service.getServiceProviders();}
     public int getServiceIndex(String sName) {

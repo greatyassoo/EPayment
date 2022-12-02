@@ -1,13 +1,17 @@
 import java.util.*;
 public class AdminTerminal {
 	
-	private AdminController aController;
+	private AdminController controller;
+
+    AdminTerminal(LinkedList<Service> services,LinkedList<Account> accounts){
+        controller = new AdminController(services, accounts);
+    }
 	
 	public void showOptions(){
         do{
             Scanner scanner = new Scanner(System.in);
             System.out.print("===================\nName: "+"Admin"+"\n");
-            System.out.print("(===================\n1-Add new service provider.\n2-Set initial discount.\n3-Set service discount.\n4-List all users.\n5-List all user transactions.\n6-Accept refund.\n7-Reject refund.\n8-Logout.\nChoice:");
+            System.out.print("===================\n1-Add new service provider.\n2-Set initial discount.\n3-Set service discount.\n4-List all users.\n5-List all user transactions.\n6-Accept refund.\n7-Reject refund.\n8-Logout.\nChoice:");
     
             String choice = scanner.nextLine();
             scanner.close();
@@ -24,10 +28,10 @@ public class AdminTerminal {
             	setServiceDiscount();
             	break;
             case "4":
-            	aController.listAllUsers();
+            	controller.listAllUsers();
             	break;
             case "5":
-            	aController.listAllUserTransactions();
+            	controller.listAllUserTransactions();
             	break;
             case "6":
             	break;
@@ -76,7 +80,7 @@ public class AdminTerminal {
 			tmpForm.addDropDown(dropDownName);
 		}
 		scanner.close();
-		return aController.addServiceProvider(serviceName,tmp);
+		return controller.addServiceProvider(serviceName,tmp);
 	}
 	
 	public boolean setInitialDiscount(){
@@ -84,8 +88,9 @@ public class AdminTerminal {
 		System.out.println("Enter discount amount: ");
 		int discountAmount = sc.nextInt();
 		sc.close();
-		return aController.setInitialDiscount(discountAmount);
+		return controller.setInitialDiscount(discountAmount);
 	}
+
 	public boolean setServiceDiscount(){
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter discount amount: ");
@@ -93,9 +98,7 @@ public class AdminTerminal {
 		System.out.println("Enter service name: ");
 		String serviceName = sc.nextLine();
 		sc.close();
-		return aController.setServiceDiscount(discountAmount,serviceName);
+		return controller.setServiceDiscount(discountAmount,serviceName);
 	}
-	
-	
 
 }

@@ -13,6 +13,8 @@ public class Account {
 	Account(String userName,String password){
 		this.userName=userName;
 		this.password=password;
+		this.transactions = new LinkedList<Transaction>();
+		this.refundRequests = new LinkedList<Integer>();
 	}
 
 	Account(String userName,String password,String email, String phoneNumber){
@@ -38,6 +40,7 @@ public class Account {
 	public String getPhoneNumber() {return this.phoneNumber;}
 	public String getPassword() {return this.password;}	
 	public Double getWalletBalance() {return this.walletBalance;}
+	public Transaction getTransaction(int indx) {return transactions.get(indx);}
 	public LinkedList<Transaction> getTransactions() {return this.transactions;}
 	public LinkedList<Integer> getRefundRequests() {return this.refundRequests;}
 

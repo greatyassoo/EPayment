@@ -1,8 +1,11 @@
 import java.util.*;
 public class AdminController extends ServicesController {
-	
-	
 	private LinkedList <Account>accounts;
+
+	AdminController(LinkedList<Service> services , LinkedList<Account> accounts){
+		this.services = services ;
+		this.accounts = accounts ;
+	}
 	
 	public boolean addServiceProvider(String serviceName,ServiceProvider serviceProvider) {
 		try {
@@ -46,8 +49,7 @@ public class AdminController extends ServicesController {
 		System.out.println(accounts);
 	}
 	public void listAllUserTransactions() {
-		for(int i=0;i<accounts.size();i++)
-		{
+		for(int i=0;i<accounts.size();i++) {
 			System.out.println(accounts.get(i).getTransactions());
 		}
 	}

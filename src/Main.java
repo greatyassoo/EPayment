@@ -8,6 +8,8 @@ public class Main {
         services = new LinkedList<Service>();
         accounts = new LinkedList<Account>();
 
+        accounts.addLast(new Account("test", "test"));
+
         LinkedList<ServiceProvider> sp1 = new LinkedList<ServiceProvider>();
         sp1.addLast(new ServiceProvider("Vodafone", null));
         sp1.addLast(new ServiceProvider("Etisalat", null));
@@ -16,7 +18,6 @@ public class Main {
 
         Service s1 = new Service("Mobile Recharge", 10, 5, sp1);
         services.addLast(s1);
-
 
 
         AccountsFetcher accountsFetcher = new AccountsFetcher(accounts);
@@ -58,7 +59,8 @@ public class Main {
     }
     
     private static void Admin(){
-        
+        AdminTerminal terminal = new AdminTerminal(services,accounts);
+        terminal.showOptions();
     }
 }
         
