@@ -1,31 +1,32 @@
-import java.util.*;
-
 public class Form {
 
-    private LinkedList <Pair> textBoxes;
-    private LinkedList <Pair> dropDowns;
+    private String serviceProviderName;
+    private double amount;
 
-    public Form(){
-         textBoxes = new LinkedList <Pair>();
-         dropDowns = new LinkedList <Pair>();
-     }
+    public Form() {} // have it defined the code wont scream at me. NEED TO REFACTOR CODE
+    public Form(String serviceProviderName, double amount) {
+        this.serviceProviderName = serviceProviderName;
+        this.amount = amount;
+    }
 
-    public boolean addTextBox(String tName) {
-    	textBoxes.addLast(new Pair(tName));
-    	return true;
+
+
+    // for now ill assume its MobileRechargeService using Vodafone
+
+    public void displayFormHeader() {
+        System.out.println("============================================= Mobile Recharge Form =============================================");
     }
     
-    public boolean addDropDown(String dName) {
-    	dropDowns.addLast(new Pair(dName));
-    	return true;
+    public void displayServiceProviderName() {
+        System.out.println("Service Provider: " + serviceProviderName);
     }
-    
-    public int getTSize()
+
+
+    public void displayForm()
     {
-    	return textBoxes.size();
-    }
-    public int getDSize()
-    {
-    	return dropDowns.size();
+        displayFormHeader();
+        displayServiceProviderName();
+        int phoneNumber;
+
     }
 }

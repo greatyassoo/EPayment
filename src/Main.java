@@ -15,17 +15,18 @@ public class Main {
         sp1.addLast(new ServiceProvider("Etisalat", null));
         sp1.addLast(new ServiceProvider("Orange", null));
         sp1.addLast(new ServiceProvider("WE", null));
-
+        
         Service s1 = new Service("Mobile Recharge", 10, 5, sp1);
         services.addLast(s1);
-
-
+        
         AccountsFetcher accountsFetcher = new AccountsFetcher(accounts);
+
+        Admin();
+
         LoginTerminal terminal = new LoginTerminal(accountsFetcher);
         while(true){            
-            Scanner scanner = new Scanner(System.in);
             System.out.print("===================\n1-Login.\n2-SignUp.\n3-Exit\n===================\nChoice: ");
-            String answer = scanner.nextLine();
+            String answer = SingleScanner.getInstance().nextLine();
 
             if(answer.equals("1")){
                 Account tAccount = terminal.logIn();
@@ -43,7 +44,7 @@ public class Main {
                     System.out.println("Error Account invalid.");
             }
             else if(answer.equals("3")){
-                scanner.close();
+                SingleScanner.getInstance().close();
                 return;
             }
             else{

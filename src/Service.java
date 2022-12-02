@@ -2,9 +2,10 @@ import java.util.LinkedList;
 
 public class Service {
     private String name;
-    private double initialDiscount=0;
-    private double serviceDiscount=0;
-    private LinkedList<ServiceProvider> serviceProviders;
+    private double initialDiscount = 0;
+    private double serviceDiscount = 0;
+    private LinkedList<ServiceProvider> serviceProviders;   
+    private Form form;
 
     Service(){}
     
@@ -13,6 +14,7 @@ public class Service {
         this.initialDiscount=initialDiscount;
         this.serviceDiscount=serviceDiscount;
         this.serviceProviders=serviceProviders;
+        this.form = new Form();
     }
 
     //setters

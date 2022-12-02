@@ -1,11 +1,9 @@
 public class Pair{
-	
 	protected String name;
 	protected String value;
 	public String getName() {
 		return name;
 	}
-	
 	public Pair(String name) {
 		super();
 		this.name = name;
@@ -21,6 +19,4 @@ public class Pair{
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	
 }

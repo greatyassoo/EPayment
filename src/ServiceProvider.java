@@ -1,13 +1,20 @@
 public class ServiceProvider {
-    protected String name;
-    protected Form form;
-    ServiceProvider(){};
-    protected Payment paymentMethod;
-    ServiceProvider(String name,Form form){
-        this.name=name;
-        this.form=form;
-    }
-    public void setPaymentMethod(Payment paymentMethod){this.paymentMethod=paymentMethod;}
+    private String name;
+    private PaymentStrategy paymentStrategy;
 
-    public String getName(){return name;}
+    public ServiceProvider(String name, PaymentStrategy paymentStrategy)
+    {
+        this.name = name; 
+        this.paymentStrategy = paymentStrategy;
+    }
+
+    // setters
+    public void setName(String name) {this.name = name;}
+    public void setPaymentStrategy(PaymentStrategy paymentStrategy) {this.paymentStrategy = paymentStrategy;}
+
+    //getters
+    public String getName() {return this.name;}
+
+    //functions
+    public void pay(double amount) {this.paymentStrategy.Pay(amount);}
 }

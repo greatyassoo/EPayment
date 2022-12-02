@@ -43,13 +43,13 @@ public class Account {
 	public Transaction getTransaction(int indx) {return transactions.get(indx);}
 	public LinkedList<Transaction> getTransactions() {return this.transactions;}
 	public LinkedList<Integer> getRefundRequests() {return this.refundRequests;}
+	public String getAllInfo(){return userName+":"+password+":"+email+":"+phoneNumber+":"+walletBalance;}
 
 	public boolean removeTransaction(int index){
 		try{transactions.remove(index);}
 		catch(Exception e){return false;}
 		return true;
 	}
-
 	public boolean removeRefundRequest(int index){
 		try{refundRequests.remove(index);}
 		catch(Exception e){return false;}

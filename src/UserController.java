@@ -33,6 +33,9 @@ public class UserController extends ServicesController{
 
     public LinkedList<String> getTransactions(){
         LinkedList<String> transactionsNames = new LinkedList<String>();
+        
+
+
         return transactionsNames;
     }
 
@@ -53,12 +56,5 @@ public class UserController extends ServicesController{
         }
         account.addRefundRequest(indx);
         return true;
-    }
-
-    public LinkedList<String> getDiscounts(){
-        LinkedList<String> discounts = new LinkedList<String>();
-        for(int i=0 ; i< services.size() ; i++)
-            discounts.addLast(services.get(i).getName()+" - Discount : "+services.get(i).getServiceDiscount()+"% , Initial : "+services.get(i).getInitialDiscount()+"%");
-        return discounts;
     }
 }

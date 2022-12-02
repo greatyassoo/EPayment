@@ -41,4 +41,11 @@ public abstract class ServicesController {
     	return -1;
     }
 
+    public LinkedList<String> getServicesDiscounts(){
+        LinkedList<String> discounts = new LinkedList<String>();
+        for(int i=0 ; i< services.size() ; i++)
+            discounts.addLast(services.get(i).getName()+" - Discount : "+services.get(i).getServiceDiscount()+"% , Initial : "+services.get(i).getInitialDiscount()+"%");
+        return discounts;
+    }
+
 }

@@ -13,11 +13,10 @@ public class UserTerminal {
 
     public void showOptions(){
         do{
-            Scanner scanner = new Scanner(System.in);
             System.out.print("===================\nName: "+account.getUserName()+"\nWallet balance: "+account.getWalletBalance()+"\n");
             System.out.print("===================\n1-Search For service.\n2-List all services.\n3-Fund account.\n4-Make refund request.\n5-Show discounts\n6-LogOut.\nChoice: ");
     
-            String choice = scanner.nextLine();
+            String choice = SingleScanner.getInstance().nextLine();
     
             String serviceName="";
             System.out.print("===================\n");
@@ -53,7 +52,7 @@ public class UserTerminal {
         printStringList(servicesNames);
         
         System.out.print("Enter Service number: ");
-        int currentServiceIndex = new Scanner(System.in).nextInt();
+        int currentServiceIndex = SingleScanner.getInstance().nextInt();
         currentServiceIndex--;
         
         if(servicesNames.size()<currentServiceIndex)
@@ -67,7 +66,7 @@ public class UserTerminal {
         printStringList(serviceProviders);
         System.out.print("===================\nEnter Service Provider: ");
         
-        int currentServiceProviderIndex = new Scanner(System.in).nextInt();
+        int currentServiceProviderIndex = SingleScanner.getInstance().nextInt();
         currentServiceProviderIndex--;
         
         if(serviceProviders.size()<currentServiceProviderIndex)
@@ -77,13 +76,12 @@ public class UserTerminal {
     }
 
     public void fundAccount(){
-        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter creditCard number: ");
-        String CCN = scanner.nextLine();
+        String CCN = SingleScanner.getInstance().nextLine();
         System.out.print("Enter PIN: ");
-        String PIN = scanner.nextLine();
+        String PIN = SingleScanner.getInstance().nextLine();
         System.out.print("Enter ammount: ");
-        double ammount = scanner.nextDouble();
+        double ammount = SingleScanner.getInstance().nextDouble();
         
         if(controller.fundAccount(CCN, PIN, ammount))
             System.out.print("Successfully Recharged "+ammount+" to the wallet.\n");
@@ -99,7 +97,7 @@ public class UserTerminal {
         LinkedList<String> transactions = controller.getTransactions();
 
         System.out.print("Enter Transaction number: ");
-        int transactionIndex = new Scanner(System.in).nextInt();
+        int transactionIndex = SingleScanner.getInstance().nextInt();
         transactionIndex--;
 
         if(transactions.size()<transactionIndex || transactionIndex <0){
@@ -108,25 +106,19 @@ public class UserTerminal {
         }
         
         boolean isAdded = controller.addRefundRequest(transactionIndex);
-        if(!isAdded){
+        if(!isAdded)
             System.out.print("Transaction number" + transactionIndex +" already in refund requests.\n");
-            return;
-        }
-
-        System.out.print("Transaction number "+ transactionIndex +" successfully added to refund requests.\n");
+        else
+            System.out.print("Transaction number "+ transactionIndex +" successfully added to refund requests.\n");
     }
 
     public void showDiscounts(){
-        printStringList(controller.getDiscounts());
+        printStringList(controller.getServicesDiscounts());
     }
 
     private void printStringList(LinkedList<String> List){
-        System.out.print("===================\n");
-
         for(int i=0 ; i< List.size() ; i++)
             System.out.print((i+1)+"-"+List.get(i)+".\n");
-
-        System.out.print("===================\n");
     }
     
 
