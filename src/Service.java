@@ -2,42 +2,40 @@ import java.util.LinkedList;
 
 public class Service {
     private String name;
-    private double initialDiscount = 0;
-    private double serviceDiscount = 0;
-    private LinkedList<ServiceProvider> serviceProviders;   
-    private Form form;
-
-    //Service(){}
+    public Discount discount;
+    private LinkedList<String> serviceProviders;   
+    private TemplateForm form;
     
-    Service(String name, double initialDiscount , double serviceDiscount , LinkedList<ServiceProvider> serviceProviders){
+    Service(String name, double initialDiscount , double serviceDiscount , LinkedList<String> serviceProviders){
         this.name = name;
-        this.initialDiscount = initialDiscount;
-        this.serviceDiscount = serviceDiscount;
+        discount= new BaseDiscount(1);
         this.serviceProviders = serviceProviders;
-        this.form = new Form();
+    }
+
+    Service(String name, double initialDiscount , double serviceDiscount , LinkedList<String> serviceProviders, TemplateForm form){
+        this.name = name;
+        discount= new BaseDiscount(1);
+        this.serviceProviders = serviceProviders;
+        this.form = form;
     }
 
     //setters
     public void setName(String name){this.name=name;}
-    public void setInitialDiscount(double initialDiscount){this.initialDiscount=initialDiscount;}
-    public void setServiceDiscount(double serviceDiscount){this.serviceDiscount=serviceDiscount;}
+    public void addOverAllDiscount(double discountAmmount){discount = new OverAllDiscount(discount, discountAmmount);}
+    public void addServiceDiscount(double discountAmmount){discount = new ServiceDiscount(discount, discountAmmount);}
     
-    public boolean addServiceProvider(ServiceProvider serviceProvider){
+    public boolean addServiceProvider(String serviceProvider){
         try {serviceProviders.addLast(serviceProvider);} 	
         catch (Exception e) {return false;}
         return true;
     }
-    public boolean removeServiceProvider(int indx){
-        try{serviceProviders.remove(indx);}
-        catch(Exception e){return false;}
-        return true;
-    }
 
     //getters
-    public String getName(){return name;}
-    public double getInitialDiscount(){return initialDiscount;}
-    public double getServiceDiscount(){return serviceDiscount;}
-    public LinkedList<ServiceProvider> getServiceProviders(){return serviceProviders;}
-    public void initForm(String serviceProviderName) {form.displayForm(name, serviceProviderName);}
+    public String getName() {return name;}
+    public String getDiscountsInfo() {return discount.getInfo();}
+    public double getDiscount() {return discount.getDiscount();}
+    public LinkedList<String> getServiceProviders(){return serviceProviders;}
+    public TemplateForm getForm() {return this.form;}
+    //public void initForm(String serviceProviderName) {form.displayForm(name, serviceProviderName);}
 
 }

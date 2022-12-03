@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class UserTerminal {
     private UserController controller ;
     private Account account;
-    private String currentService="",currentServiceProvider="";
+    public static String currentService="",currentServiceProvider="";
 
     UserTerminal(LinkedList<Service> services , Account account){
         this.controller = new UserController(services, account);
@@ -73,6 +73,10 @@ public class UserTerminal {
             throw new ServiceProviderNameException(Integer.toString(currentServiceProviderIndex));
         
         currentServiceProvider = serviceProviders.get(currentServiceProviderIndex);
+
+        //TODO passing the discount to the form for calculation
+        controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider , controller.);
+
     }
 
     public void fundAccount(){
@@ -85,9 +89,8 @@ public class UserTerminal {
         
         if(controller.fundAccount(CCN, PIN, ammount))
             System.out.print("Successfully Recharged "+ammount+" to the wallet.\n");
-        else{
+        else
             System.out.print("Recharge unsuccessful.\n");
-        }
     }
 
     public void makeRefundRequest(){

@@ -1,39 +1,41 @@
 // Format : Service:ServiceProvider:Ammount:PaymentMethod:Discount:Data
 
 public class Transaction {
-    private String service, serviceProvider, data, paymentMethod, type; // data is the unknown data that varies between different transactions.
-    private double amount,discount;
-    public static enum format {type,service,serviceProvider,ammount,paymentMethod,data};
+    public static enum TYPE {PAYMENT, REFUND, TOP_UP}
 
-    Transaction(String type, String service, String serviceProvider, String data, String paymentMethod, double amount, double discount) {
-        this.type = type;
+    private String service, serviceProvider , paymentMethod , phoneNumber; // data is the unknown data that varies between different transactions.
+    private double ammount, discount;
+    private TYPE type;
+
+    public Transaction() {};
+    public Transaction(TYPE type, String service, String serviceProvider, String paymentMethod, String phoneNumber, double ammount, double discount) {
         this.service = service; 
         this.serviceProvider = serviceProvider;
-        this.data = data;
         this.paymentMethod = paymentMethod;
-        this.amount = amount;
+        this.phoneNumber = phoneNumber;
+        this.ammount = ammount;
         this.discount = discount;
     }
        
     
     //setters
-    public void setType(String type) {this.type = type;}
     public void setService(String service) {this.service = service;}
     public void setServiceProvider(String serviceProvider) {this.serviceProvider = serviceProvider;}
-    public void setData(String data) {this.data = data;}
     public void setPaymentMethod(String paymentMethod) {this.paymentMethod = paymentMethod;}
-    public void setAmount(double amount) {this.amount = amount;}
+    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+    public void setAmount(double ammount) {this.ammount = ammount;}
     public void setDiscount(double discount) {this.discount = discount;}
+    public void setType(TYPE type) {this.type = type;}
     
     
     //getters
-    public String getType() {return this.type;}
+    public TYPE getType() {return this.type;}
     public String getService() {return this.service;}
     public String getServiceProvider() {return this.serviceProvider;}
-    public String getData() {return this.data;}
     public String getPaymentMethod() {return this.paymentMethod;}
-    public double getAmount() {return this.amount;}
+    public String getPhoneNumber() {return this.phoneNumber;}
+    public double getAmount() {return this.ammount;}
     public double getDiscount() {return this.discount;}
-    public String getAllInfo() {return type+":"+service+":"+serviceProvider+":"+amount+":"+paymentMethod+":"+data;}
+    public String getAllInfo() {return type+":"+service+":"+serviceProvider+":"+ammount+":"+paymentMethod;}
     
 }

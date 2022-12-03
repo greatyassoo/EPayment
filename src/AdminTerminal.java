@@ -10,9 +10,9 @@ public class AdminTerminal {
 	public void showOptions(){
         do{
             System.out.print("===================\nName: "+"Admin"+"\n");
-            System.out.print("===================\n1-Add new service provider.\n2-Set initial discount.\n3-Set service discount.\n4-List all accounts.\n5-List user transactions.\n6-Manage refunds.\n7-Logout.\nChoice:");
+            System.out.print("===================\n1-Add new service provider.\n2-Set overall discount.\n3-Set service discount.\n4-List all accounts.\n5-List user transactions.\n6-Manage refunds.\n7-Logout.\nChoice:");
     
-            String choice = SingleScanner.getInstance().nextLine();
+            String choice = SingleScanner.getInstance().next();
     
             System.out.print("===================\n");
             switch(choice){
@@ -20,10 +20,10 @@ public class AdminTerminal {
             	//addServiceProvider();
             	break;
             case "2":
-				if(!setInitialDiscount()) System.out.print("Error, try again.\n");
+				if(!addOverAllDiscount()) System.out.print("Error, try again.\n");
             	break;
             case "3":
-            	if(!setServiceDiscount()) System.out.print("Error, try again.\n");
+            	if(!addServiceDiscount()) System.out.print("Error, try again.\n");
             	break;
             case "4":
 				System.out.print("Accounts:-\n");
@@ -33,7 +33,8 @@ public class AdminTerminal {
 				getAllAccountTransactions();
             	break;
             case "6":
-				manageRefunds();
+				if(!manageRefunds())
+					System.out.print("Error,Try again.\n");;
             	break;
             case "7":
             	return;
@@ -80,31 +81,63 @@ public class AdminTerminal {
 	// 	return controller.addServiceProvider(serviceName,tmp);
 	// }
 	
-	private void manageRefunds() {
-		
+	private boolean manageRefunds() {
+		LinkedList<LinkedList<String>> refunds = controller.getRefundRequests();
+		System.out.print("Refund requests:-\n===================\n");
+		for(int i=0 ; i<refunds.size() ; i++){
+			System.out.print((i+1)+"-");
+			for(int j=0 ; j <refunds.get(i).size() ; j++)
+				System.out.print(refunds.get(i).get(j)+" ");
+			System.out.print("\n");
+		}
+
+		int choice;
+
+		do{
+			System.out.print("Choice: ");
+			choice = SingleScanner.getInstance().nextInt();
+			choice--;
+			if(choice > refunds.size() || choice<0) System.out.print("Invalid, please choose from 1 to"+(refunds.size()+1)+".\n");
+		}while(choice > refunds.size() || choice<0);
+
+		System.out.print("===================\nPicked: ");
+		for(int i=0 ; i<refunds.get(choice).size() ; i++)
+			System.out.print(refunds.get(i)+" ");
+
+		System.out.print("\nType Accept/Reject: ");
+		String answer = SingleScanner.getInstance().nextLine();
+
+		return(controller.processRefundRequest(refunds.get(choice),answer));
 	}
 
 	private void getAllAccountTransactions() {
 		System.out.print("Accounts:-\n");
         printStringList(controller.getAllAccounts());
+		System.out.print("Enter user number: ");
 		int accountIndex = SingleScanner.getInstance().nextInt();
 		accountIndex--;
 
-		if(controller.getAllAccountTransactions(accountIndex)==null){
+		LinkedList<String> accountTransactions = controller.getAllAccountTransactions(accountIndex) ;
+		if(accountTransactions==null){
 			System.out.print("Error out of range index.\n");
+			return;
 		}
-		
+		else if(accountTransactions.size()==0){
+			System.out.print("This user has no Transactions.\n");
+			return;
+		}
+		printStringList(accountTransactions);
 	}
 
-	public boolean setInitialDiscount(){
+	public boolean addOverAllDiscount(){
 		printStringList(controller.getServicesDiscounts());
-		System.out.println("Enter discount amount: ");
+		System.out.print("Enter discount amount: ");
 		double discountAmount = SingleScanner.getInstance().nextDouble();
 		
-		return controller.setInitialDiscount(discountAmount);
+		return controller.addOverAllDiscount(discountAmount);
 	}
 
-	public boolean setServiceDiscount(){
+	public boolean addServiceDiscount(){
 		LinkedList<String> servicesDiscounts = controller.getServicesDiscounts();
 		printStringList(servicesDiscounts);
 		
@@ -118,7 +151,7 @@ public class AdminTerminal {
 			return false;
 		
 		String serviceName = controller.getServiceName(serviceNumber);
-		if(controller.setServiceDiscount(serviceName,discountAmount))
+		if(controller.addServiceDiscount(serviceName,discountAmount))
 			System.out.print("Changed "+serviceName+" discount to "+discountAmount+".\n");
 
 		return true; 

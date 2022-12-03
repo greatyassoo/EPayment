@@ -2,7 +2,7 @@ import java.util.LinkedList;
 
     public class UserController extends ServicesController{
 
-    private Account account;
+    public static Account account;
 
     UserController(LinkedList<Service> services , Account account){
         this.services = services;
@@ -10,8 +10,10 @@ import java.util.LinkedList;
     }
 
     public boolean fundAccount(String CCN , String PIN , double ammount){
-        account.setWalletBalance(account.getWalletBalance()+ammount);
-        return true; //TODO: Why is this bool
+        try {
+            account.setWalletBalance(account.getWalletBalance()+ammount);
+            return true;
+        } catch (Exception e) {return false;}
     }
 
     public LinkedList<String> getServicesNames(){
@@ -33,9 +35,7 @@ import java.util.LinkedList;
 
     public LinkedList<String> getTransactions(){
         LinkedList<String> transactionsNames = new LinkedList<String>();
-        
-
-
+    
         return transactionsNames;
     }
 
@@ -45,7 +45,7 @@ import java.util.LinkedList;
         Transaction transaction;
         for(int i=0 ; i<refundRequestsIndx.size() ; i++){
             transaction = account.getTransaction(refundRequestsIndx.get(i));
-            String transactionString = transaction.getService()+":"+transaction.getServiceProvider()+":"+transaction.getAmount()+":"+transaction.getPaymentMethod()+":"+transaction.getDiscount()+":"+transaction.getData();
+            String transactionString = transaction.getService()+":"+transaction.getServiceProvider()+":"+transaction.getAmount()+":"+transaction.getPaymentMethod()+":"+transaction.getDiscount();
             refundRequests.addLast(transactionString);
         }
         return refundRequests;
@@ -58,9 +58,12 @@ import java.util.LinkedList;
         return true;
     }
 
-    // testing 
-    public void pay(String serviceName, String serviceProviderName){
-        getService(serviceName).initForm(serviceProviderName);
-
+    public double getServiceDiscount(String serviceName){
+        //double
+        //TODO to continue
     }
+    // testing 
+    // public void pay(String serviceName, String serviceProviderName){
+    //     getService(serviceName).initForm(serviceProviderName);
+    // }
 }

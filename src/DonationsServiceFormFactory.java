@@ -1,8 +1,8 @@
 import java.util.LinkedList;
 public class DonationsServiceFormFactory implements AbstractServiceFormFactory{
-    public Service createService(double initialDiscount , double serviceDiscount , LinkedList<ServiceProvider> serviceProviders) {
+    public Service createService(double initialDiscount , double serviceDiscount , LinkedList<String> serviceProviders) {
         return new Service("Donations", initialDiscount, serviceDiscount, serviceProviders);
     }
 
-    public Form createForm() {return new Form();} //should return a DonationsService Form.
+    public TemplateForm createForm() {return new DonationsForm();} //should return a DonationsService Form.
 }
