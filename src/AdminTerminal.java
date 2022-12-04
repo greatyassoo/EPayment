@@ -58,7 +58,7 @@ public class AdminTerminal {
 			case "1":
 				sType = "Mobile Recharge Service";
 				serviceIndex = controller.getServiceIndex(sType);
-				if(checkServiceProviderName(spName, serviceIndex))
+				if(controller.checkServiceProviderName(spName, serviceIndex))
 				{
 					controller.addServiceProvider(serviceIndex,spName);
 				}
@@ -66,7 +66,7 @@ public class AdminTerminal {
 			case "2":
 				sType = "Internet Payment Service";
 				serviceIndex = controller.getServiceIndex(sType);
-				if(checkServiceProviderName(spName, serviceIndex))
+				if(controller.checkServiceProviderName(spName, serviceIndex))
 				{
 					controller.addServiceProvider(serviceIndex,spName);
 				}
@@ -74,7 +74,7 @@ public class AdminTerminal {
 			case "3":
 				sType = "Landline";
 				serviceIndex = controller.getServiceIndex(sType);
-				if(checkServiceProviderName(spName, serviceIndex))
+				if(controller.checkServiceProviderName(spName, serviceIndex))
 				{
 					controller.addServiceProvider(serviceIndex,spName);
 				}
@@ -82,7 +82,7 @@ public class AdminTerminal {
 			case "4":
 				sType = "Donations";
 				serviceIndex = controller.getServiceIndex(sType);
-				if(checkServiceProviderName(spName, serviceIndex))
+				if(controller.checkServiceProviderName(spName, serviceIndex))
 				{
 					controller.addServiceProvider(serviceIndex,spName);
 				}
@@ -188,17 +188,4 @@ public class AdminTerminal {
         for(int i=0 ; i< List.size() ; i++)
             System.out.print((i+1)+"-"+List.get(i)+".\n");
     }
-
-	public boolean checkServiceProviderName(String name,int index)
-	{
-		for(int i=0;i<controller.getService(index).getServiceProviders().size();i++)
-		{
-			if(name.equals(controller.getService(index).getServiceProviders().get(i)))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
 }
