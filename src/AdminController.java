@@ -105,15 +105,4 @@ public class AdminController extends ServicesController {
 
 		return 0;
 	}
-	public boolean checkServiceProviderName(String name,int index)
-	{
-		for(int i=0;i<controller.getService(index).getServiceProviders().size();i++)
-		{
-			if(name.equals(controller.getService(index).getServiceProviders().get(i)))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
 }
