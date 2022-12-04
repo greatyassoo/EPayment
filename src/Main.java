@@ -30,25 +30,17 @@ public class Main {
     
     private static LinkedList<Service> services;
     private static LinkedList<Account> accounts;
+    private static AccountsFetcher accountsFetcher;
+    private static DiscountController discountController;
 
     public static void main(String[] args) {
         services = new LinkedList<Service>();
         accounts = new LinkedList<Account>();
+        accountsFetcher = new AccountsFetcher(accounts);
+        discountController = new DiscountController();
 
         accounts.addLast(new Account("test", "test"));
-
-        LinkedList<String> sp1 = new LinkedList<String>();
-        sp1.addLast(("Vodafone"));
-        sp1.addLast(("Etisalat"));
-        sp1.addLast(("Orange"));
-        sp1.addLast(("WE"));
-        
-        Service s1 = new Service("Mobile Recharge", 10, 5, sp1);
-        services.addLast(s1);
-        
-        AccountsFetcher accountsFetcher = new AccountsFetcher(accounts);
-
-        //Admin();
+        initializeServices();
 
         LoginTerminal terminal = new LoginTerminal(accountsFetcher);
         while(true){            
@@ -80,15 +72,47 @@ public class Main {
         }
 
     }
-    
+
     private static void User(Account account){
-        UserTerminal terminal = new UserTerminal(services,account);
+        UserTerminal terminal = new UserTerminal(services,account,discountController);
         terminal.showOptions();
     }
     
     private static void Admin(){
-        AdminTerminal terminal = new AdminTerminal(services,accounts);
+        AdminTerminal terminal = new AdminTerminal(services,accounts,discountController);
         terminal.showOptions();
+    }
+
+    private static void initializeServices() {
+        LinkedList<String> sp1 = new LinkedList<String>();
+        sp1.addLast(("Vodafone"));
+        sp1.addLast(("Etisalat"));
+        sp1.addLast(("Orange"));
+        sp1.addLast(("WE"));
+        Service s1 = new Service("Mobile Recharge", sp1);
+
+        LinkedList<String> sp2 = new LinkedList<String>();
+        sp2.addLast(("Vodafone"));
+        sp2.addLast(("Etisalat"));
+        sp2.addLast(("Orange"));
+        sp2.addLast(("WE"));
+        Service s2 = new Service("Internet payment", sp2);
+
+        LinkedList<String> sp3 = new LinkedList<String>();
+        sp3.addLast("Monthly receipt");
+        sp3.addLast("Quarter receipt");
+        Service s3 = new Service("Landline", sp3);
+
+        LinkedList<String> sp4 = new LinkedList<String>();
+        sp4.addLast("Cancer Hospital");
+        sp4.addLast("Schools");
+        sp4.addLast("NGOs (Non profitable organizations)");
+        Service s4 = new Service("Donations", sp3);
+        
+        services.addLast(s1);
+        services.addLast(s2);
+        services.addLast(s3);
+        services.addLast(s4);
     }
 }
         

@@ -5,9 +5,10 @@ public class UserTerminal {
     private UserController controller ;
     private Account account;
     public static String currentService="",currentServiceProvider="";
+    private int currentServiceIndex,currentServiceProviderIndex;
 
-    UserTerminal(LinkedList<Service> services , Account account){
-        this.controller = new UserController(services, account);
+    UserTerminal(LinkedList<Service> services , Account account , DiscountController discountController){
+        this.controller = new UserController(services, account, discountController);
         this.account=account;
     }
 
@@ -21,12 +22,13 @@ public class UserTerminal {
             String serviceName="";
             System.out.print("===================\n");
             switch(choice){
-                case "1" : serviceName = new Scanner(System.in).nextLine();
+                           
+                case "1" : System.out.print("Enter service name: ");
+                           serviceName = new Scanner(System.in).nextLine();
     
                 case "2" : try {showServicesNames(serviceName);showServiceProvidersNames();} 
                            catch (ServiceNameException ex) {System.out.print(ex);break;}
                            catch (ServiceProviderNameException ex){System.out.print(ex);break;}
-                           
                            break;
     
                 case "3" : fundAccount();
@@ -52,7 +54,7 @@ public class UserTerminal {
         printStringList(servicesNames);
         
         System.out.print("Enter Service number: ");
-        int currentServiceIndex = SingleScanner.getInstance().nextInt();
+        currentServiceIndex = SingleScanner.getInstance().nextInt();
         currentServiceIndex--;
         
         if(servicesNames.size()<currentServiceIndex)
@@ -66,7 +68,7 @@ public class UserTerminal {
         printStringList(serviceProviders);
         System.out.print("===================\nEnter Service Provider: ");
         
-        int currentServiceProviderIndex = SingleScanner.getInstance().nextInt();
+        currentServiceProviderIndex = SingleScanner.getInstance().nextInt();
         currentServiceProviderIndex--;
         
         if(serviceProviders.size()<currentServiceProviderIndex)
@@ -74,8 +76,8 @@ public class UserTerminal {
         
         currentServiceProvider = serviceProviders.get(currentServiceProviderIndex);
 
-        //TODO passing the discount to the form for calculation
-        controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider , controller.);
+        //TODO
+        controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider , controller.discountController.getDiscount(Service.Names.values()[currentServiceIndex]));
 
     }
 
@@ -103,20 +105,22 @@ public class UserTerminal {
         int transactionIndex = SingleScanner.getInstance().nextInt();
         transactionIndex--;
 
-        if(transactions.size()<transactionIndex || transactionIndex <0){
+        if(transactions.size()<transactionIndex || transactionIndex <=0){
             System.out.print("Transaction not available.\n");
             return;
         }
         
         boolean isAdded = controller.addRefundRequest(transactionIndex);
         if(!isAdded)
-            System.out.print("Transaction number" + transactionIndex +" already in refund requests.\n");
+            System.out.print("Transaction number" + transactionIndex+1 +" already in refund requests.\n");
         else
-            System.out.print("Transaction number "+ transactionIndex +" successfully added to refund requests.\n");
+            System.out.print("Transaction number "+ transactionIndex+1 +" successfully added to refund requests.\n");
     }
 
     public void showDiscounts(){
-        printStringList(controller.getServicesDiscounts());
+        System.out.print("OverAllDiscount: "+DiscountController.getOverAllDiscount()+"\nServiceDiscounts:-\n");
+        for(int i=0 ; i<Service.Names.values().length ; i++)
+            System.out.print(Service.Names.values()[i]+": "+controller.discountController.getServiceDiscount(Service.Names.values()[i])+"\n");
     }
 
     private void printStringList(LinkedList<String> List){

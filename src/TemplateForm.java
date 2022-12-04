@@ -1,13 +1,14 @@
 public abstract class TemplateForm {
-    private double amount;
+    private double amount,discount;
     private String phoneNumber;
     private FormHandler handler;
     private int paymentMethodIndex=0;
 
     public TemplateForm(){this.handler = new FormHandler();}
 
-    public void displayForm(String service, String serviceProviderName) // template method style function.
+    public void displayForm(String service, String serviceProviderName , double discount) // template method style function.
     {
+        this.discount = discount;
         displayFormHeader(service); 
         displayServiceProviderName(serviceProviderName); // has different implementations between different concretions
         displayDiscount();
@@ -36,7 +37,7 @@ public abstract class TemplateForm {
             paymentMethodIndex--;
         }
 
-        int output = handler.evaluateForm(phoneNumber, amount, paymentMethodIndex) ;
+        int output = handler.evaluateForm(phoneNumber, amount, discount, paymentMethodIndex) ;
         if(output==1)
             System.out.print("Error, invalid input/s.\n");
     }
@@ -46,10 +47,6 @@ public abstract class TemplateForm {
     }
     
     protected abstract void displayServiceProviderName(String serviceProviderName);
-
-    // private void displayCost(){ // cost is amount + 7% vat.
-    //     System.out.println("Total Cost: " + (amount + (amount * 0.7)));
-    // }
 
     private void getPhoneNumber() {
         System.out.println("Enter Phone Number: ");

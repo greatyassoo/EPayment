@@ -3,8 +3,8 @@ public class AdminTerminal {
 	
 	private AdminController controller;
 
-    AdminTerminal(LinkedList<Service> services,LinkedList<Account> accounts){
-        controller = new AdminController(services, accounts);
+    AdminTerminal(LinkedList<Service> services,LinkedList<Account> accounts,DiscountController discountController){
+        controller = new AdminController(services, accounts, discountController);
     }
 	
 	public void showOptions(){
@@ -20,10 +20,12 @@ public class AdminTerminal {
             	//addServiceProvider();
             	break;
             case "2":
-				if(!addOverAllDiscount()) System.out.print("Error, try again.\n");
+				if(!setOverAllDiscount()) System.out.print("Error, enter a positive number and try again.\n");
+				else System.out.print("Done!\n");
             	break;
             case "3":
-            	if(!addServiceDiscount()) System.out.print("Error, try again.\n");
+            	if(!setServiceDiscount()) System.out.print("Error, try again.\n");
+				else System.out.print("Done!\n");
             	break;
             case "4":
 				System.out.print("Accounts:-\n");
@@ -33,8 +35,7 @@ public class AdminTerminal {
 				getAllAccountTransactions();
             	break;
             case "6":
-				if(!manageRefunds())
-					System.out.print("Error,Try again.\n");;
+				manageRefunds();
             	break;
             case "7":
             	return;
@@ -81,33 +82,53 @@ public class AdminTerminal {
 	// 	return controller.addServiceProvider(serviceName,tmp);
 	// }
 	
-	private boolean manageRefunds() {
+	private void manageRefunds() {
 		LinkedList<LinkedList<String>> refunds = controller.getRefundRequests();
-		System.out.print("Refund requests:-\n===================\n");
-		for(int i=0 ; i<refunds.size() ; i++){
-			System.out.print((i+1)+"-");
-			for(int j=0 ; j <refunds.get(i).size() ; j++)
-				System.out.print(refunds.get(i).get(j)+" ");
-			System.out.print("\n");
-		}
-
-		int choice;
-
 		do{
-			System.out.print("Choice: ");
-			choice = SingleScanner.getInstance().nextInt();
-			choice--;
-			if(choice > refunds.size() || choice<0) System.out.print("Invalid, please choose from 1 to"+(refunds.size()+1)+".\n");
-		}while(choice > refunds.size() || choice<0);
+			System.out.print("Refund requests:-\n===================\n");
+			for(int i=0 ; i<refunds.size() ; i++){
+				System.out.print((i+1)+"-");
+				for(int j=0 ; j <refunds.get(i).size() ; j++)
+					System.out.print(refunds.get(i).get(j)+" ");
+				System.out.print("\n");
+			}
 
-		System.out.print("===================\nPicked: ");
-		for(int i=0 ; i<refunds.get(choice).size() ; i++)
-			System.out.print(refunds.get(i)+" ");
+			int choice;
 
-		System.out.print("\nType Accept/Reject: ");
-		String answer = SingleScanner.getInstance().nextLine();
+			do{
+				System.out.print("Choice: ");
+				choice = SingleScanner.getInstance().nextInt();
+				choice--;
+				if(choice > refunds.size() || choice<0) System.out.print("Invalid, please choose from 1 to"+(refunds.size()+1)+".\n");
+			}while(choice > refunds.size() || choice<0);
 
-		return(controller.processRefundRequest(refunds.get(choice),answer));
+			System.out.print("===================\nPicked: ");
+			for(int i=0 ; i<refunds.get(choice).size() ; i++)
+				System.out.print(refunds.get(i)+" ");
+
+			System.out.print("\nType Accept/Reject/Cancel: ");
+			String answer = SingleScanner.getInstance().nextLine();
+
+			int result = controller.processRefundRequest(refunds.get(choice),answer);
+			
+			switch(result){
+				case 0 :
+					System.out.print(answer+"ed transaction "+(choice+1)+" successfully.\n");
+					return;
+				case -1 :
+					System.out.print(answer+" is invalid.\n");
+					break;
+				case -2 :
+					System.out.print("Error "+refunds.get(choice).get(0)+" couldn't be found !\n");
+					break;
+				case -3 :
+					System.out.print("Error with transaction/refund request.\n");
+					break;
+				case -4 :
+					System.out.print("Cancelling...\n");
+					return;	
+			}
+		}while(true);
 	}
 
 	private void getAllAccountTransactions() {
@@ -129,17 +150,17 @@ public class AdminTerminal {
 		printStringList(accountTransactions);
 	}
 
-	public boolean addOverAllDiscount(){
-		printStringList(controller.getServicesDiscounts());
+	public boolean setOverAllDiscount(){
+		System.out.print("Overall Discount: "+DiscountController.getOverAllDiscount()+"\n");
 		System.out.print("Enter discount amount: ");
 		double discountAmount = SingleScanner.getInstance().nextDouble();
 		
-		return controller.addOverAllDiscount(discountAmount);
+		return DiscountController.setOverAllDiscount(discountAmount);
 	}
 
-	public boolean addServiceDiscount(){
-		LinkedList<String> servicesDiscounts = controller.getServicesDiscounts();
-		printStringList(servicesDiscounts);
+	public boolean setServiceDiscount(){
+        for(int i=0 ; i<Service.Names.values().length ; i++)
+            System.out.print((i+1)+"-"+Service.Names.values()[i]+": "+controller.discountController.getServiceDiscount(Service.Names.values()[i])+"\n");
 		
 		System.out.print("Enter service number: ");
 		int serviceNumber = SingleScanner.getInstance().nextInt();
@@ -147,12 +168,11 @@ public class AdminTerminal {
 		double discountAmount = SingleScanner.getInstance().nextDouble();
 		serviceNumber--;
 
-		if(servicesDiscounts.size()<serviceNumber)
+		if(Service.Names.values().length < serviceNumber || serviceNumber < 0)
 			return false;
-		
-		String serviceName = controller.getServiceName(serviceNumber);
-		if(controller.addServiceDiscount(serviceName,discountAmount))
-			System.out.print("Changed "+serviceName+" discount to "+discountAmount+".\n");
+
+		controller.discountController.setServiceDiscount(Service.Names.values()[serviceNumber],discountAmount);
+		System.out.print("Changed "+Service.Names.values()[serviceNumber]+" discount to "+discountAmount+".\n");
 
 		return true; 
 	}

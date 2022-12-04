@@ -1,17 +1,17 @@
 public class Pair{
 	protected String name;
-	protected String value;
-	public String getName() {
-		return name;
-	}
+	protected String value;    
 	public Pair(String name) {
 		super();
 		this.name = name;
 		this.value = null;
 	}
-
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getName()
+	{
+		return name;
 	}
 	public String getValue() {
 		return value;

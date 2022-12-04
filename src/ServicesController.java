@@ -2,6 +2,7 @@ import java.util.LinkedList;
 
 public abstract class ServicesController {
     protected LinkedList<Service> services;
+    protected DiscountController discountController;
 
     public LinkedList<String> getServicesNames(String serviceName){
         LinkedList<String> temp = new LinkedList<String>();
@@ -22,20 +23,11 @@ public abstract class ServicesController {
         return temp;
     }
 
-    public LinkedList<Service> getServices(){return services;}
-
     public int getServiceIndex(String sName) {
     	for(int i=0 ; i<services.size();i++)
     		if(this.services.get(i).getName().equals(sName))
     		    return i;
     	return -1;
-    }
-
-    public LinkedList<String> getServicesDiscounts(){
-        LinkedList<String> discounts = new LinkedList<String>();
-        for(int i=0 ; i< services.size() ; i++)
-            discounts.addLast(services.get(i).getName()+" - Discount : "+services.get(i).getDiscountsInfo());
-        return discounts;
     }
 
 }

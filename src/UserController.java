@@ -4,14 +4,16 @@ import java.util.LinkedList;
 
     public static Account account;
 
-    UserController(LinkedList<Service> services , Account account){
+    UserController(LinkedList<Service> services , Account account , DiscountController discountController){
         this.services = services;
         this.account = account;
+        this.discountController = discountController;
     }
 
     public boolean fundAccount(String CCN , String PIN , double ammount){
         try {
             account.setWalletBalance(account.getWalletBalance()+ammount);
+            account.addTransactions(new Transaction(Transaction.TYPE.TOP_UP, "Recharge", "CreditCard", "CreditCard", "", ammount, 0));
             return true;
         } catch (Exception e) {return false;}
     }
@@ -35,7 +37,6 @@ import java.util.LinkedList;
 
     public LinkedList<String> getTransactions(){
         LinkedList<String> transactionsNames = new LinkedList<String>();
-    
         return transactionsNames;
     }
 
@@ -58,10 +59,6 @@ import java.util.LinkedList;
         return true;
     }
 
-    public double getServiceDiscount(String serviceName){
-        //double
-        //TODO to continue
-    }
     // testing 
     // public void pay(String serviceName, String serviceProviderName){
     //     getService(serviceName).initForm(serviceProviderName);

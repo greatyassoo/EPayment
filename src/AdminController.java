@@ -2,9 +2,10 @@ import java.util.*;
 public class AdminController extends ServicesController {
 	private LinkedList <Account>accounts;
 
-	AdminController(LinkedList<Service> services , LinkedList<Account> accounts){
+	AdminController(LinkedList<Service> services , LinkedList<Account> accounts , DiscountController discountController){
 		this.services = services ;
 		this.accounts = accounts ;
+		this.discountController = discountController;
 	}
 	
 	public boolean addServiceProvider(String serviceName,String serviceProvider) {
@@ -12,25 +13,6 @@ public class AdminController extends ServicesController {
 		int index = super.getServiceIndex(serviceName);
 		this.services.get(index).addServiceProvider(serviceProvider);
 		return true;
-		}
-		catch (Exception e) {return false;}
-	}
-	
-	public boolean addOverAllDiscount(double n) {
-		if(n<0) return false;
-		try {
-		for(int i=0;i<services.size();i++) 
-			super.services.get(i).addOverAllDiscount(n);
-		return true;
-		}
-		catch (Exception e){return false;}
-	}
-
-	public boolean addServiceDiscount(String serviceName,double n) {
-		try {
-			int index = getServiceIndex(serviceName);
-			services.get(index).addServiceDiscount(n);
-			return true;
 		}
 		catch (Exception e) {return false;}
 	}
@@ -82,9 +64,16 @@ public class AdminController extends ServicesController {
 		return services.get(index).getName();
 	}
 
-	public boolean processRefundRequest(LinkedList<String> refund, String answer) {
-		if(answer.toLowerCase()!="accept" || answer.toLowerCase()!="reject")
-			return false;
+	//-1 wrong answer input
+	//-2 account not found
+	//-3 transaction/refund request not found
+	//-4 cancel
+	//0 normal operation
+	public int processRefundRequest(LinkedList<String> refund, String answer) {
+		if( answer.toLowerCase().equals("cancel"))
+			return -4;
+		if(! answer.toLowerCase().equals("accept") || !answer.toLowerCase().equals("reject"))
+			return -1;
 
 		String userName = refund.get(0);
 		String service = refund.get(1);
@@ -92,11 +81,32 @@ public class AdminController extends ServicesController {
 		Account account = geAccount(userName);
 		
 		if(account==null)
-			return false;
-
+			return -2;
 		
+		int transactionIndx = -1;
+		int refundIndx = -1;
 		
+		for(int i=0 ; i<account.getRefundRequests().size() ; i++){
+			if(account.getTransaction(account.getRefundRequests().get(i)).getService().equals(service) 
+				&& account.getTransaction(account.getRefundRequests().get(i)).getAmount() == ammount){
+				transactionIndx = account.getRefundRequests().get(i);
+				refundIndx = i;
+				break;
+			}
+		}
 
-		return true;
+		if(answer.toLowerCase().equals("reject")&&transactionIndx!=-1){
+			account.addTransactions(new Transaction(Transaction.TYPE.REFUND_REJECTED, "Refund", "Admin", "", "", 0, 0));
+			account.removeRefundRequest(refundIndx);
+		}
+		else if(answer.toLowerCase().equals("accept")&&transactionIndx!=-1){
+			account.addTransactions(new Transaction(Transaction.TYPE.REFUND_ACCEPTED, "Refund", "Admin", "", "", -account.getTransaction(transactionIndx).getAmount(), 0));
+			account.setWalletBalance(account.getWalletBalance()+account.getTransaction(transactionIndx).getAmount());
+			account.removeRefundRequest(refundIndx);
+		}
+		else
+			return -3;
+
+		return 0;
 	}
 }
