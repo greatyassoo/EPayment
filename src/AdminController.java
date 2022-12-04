@@ -8,10 +8,11 @@ public class AdminController extends ServicesController {
 		this.discountController = discountController;
 	}
 	
-	public boolean addServiceProvider(String serviceName,String serviceProvider) {
+	public boolean addServiceProvider(int serviceIndex,String serviceProvider) {
 		try {
-		int index = super.getServiceIndex(serviceName);
-		this.services.get(index).addServiceProvider(serviceProvider);
+		if(getService(serviceIndex).getServiceProviders().contains(serviceProvider))
+			return false;
+		getService(serviceIndex).addServiceProvider(serviceProvider);
 		return true;
 		}
 		catch (Exception e) {return false;}
@@ -64,11 +65,6 @@ public class AdminController extends ServicesController {
 		return services.get(index).getName();
 	}
 
-	//-1 wrong answer input
-	//-2 account not found
-	//-3 transaction/refund request not found
-	//-4 cancel
-	//0 normal operation
 	public int processRefundRequest(LinkedList<String> refund, String answer) {
 		if( answer.toLowerCase().equals("cancel"))
 			return -4;

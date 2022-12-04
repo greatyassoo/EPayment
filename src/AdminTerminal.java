@@ -46,48 +46,18 @@ public class AdminTerminal {
     }
 	
 	public void addServiceProvider(){
-		int serviceIndex;
 		System.out.print("Enter service provider name: ");
-		String spName = Main.scanner.nextLine();
-		LinkedList <String> serviceNames = controller.getServicesNames("");
-		printStringList(serviceNames);
-		System.out.print("Enter service type: ");
-		String sType = Main.scanner.nextLine();
-		switch(sType)
-		{
-			case "1":
-				sType = "Mobile Recharge Service";
-				serviceIndex = controller.getServiceIndex(sType);
-				if(checkServiceProviderName(spName, serviceIndex))
-				{
-					controller.addServiceProvider(spName, sType);
-				}
-				break;
-			case "2":
-				sType = "Internet Payment Service";
-				serviceIndex = controller.getServiceIndex(sType);
-				if(checkServiceProviderName(spName, serviceIndex))
-				{
-					controller.addServiceProvider(spName, sType);
-				}
-				break;
-			case "3":
-				sType = "Landline";
-				serviceIndex = controller.getServiceIndex(sType);
-				if(checkServiceProviderName(spName, serviceIndex))
-				{
-					controller.addServiceProvider(spName, sType);
-				}
-				break;
-			case "4":
-				sType = "Donations";
-				serviceIndex = controller.getServiceIndex(sType);
-				if(checkServiceProviderName(spName, serviceIndex))
-				{
-					controller.addServiceProvider(spName, sType);
-				}
-				break;
-		}
+		String serviceProvider = Main.scanner.nextLine();
+
+		LinkedList<String> services = controller.getServicesNames("");
+		printStringList(services);
+
+		System.out.print("Enter service type number: ");
+		int serviceIndex = Integer.parseInt(Main.scanner.nextLine());
+		serviceIndex--;
+
+		try{controller.addServiceProvider(serviceIndex, serviceProvider);}
+		catch(Exception e){System.out.print("Error.\n");}
 	};
 	
 	private void manageRefunds() {

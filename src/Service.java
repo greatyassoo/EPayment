@@ -15,6 +15,7 @@ public class Service {
 
     //setters
     public void setName(String name){this.name=name;}
+    
     public boolean addServiceProvider(String serviceProvider){
         try {serviceProviders.addLast(serviceProvider);} 	
         catch (Exception e) {return false;}
@@ -25,6 +26,5 @@ public class Service {
     public String getName() {return name;}
     public LinkedList<String> getServiceProviders(){return serviceProviders;}
     public TemplateForm getForm() {return this.form;}
-    //public void initForm(String serviceProviderName) {form.displayForm(name, serviceProviderName);}
 
 }
