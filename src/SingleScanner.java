@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 // used to be able to call the same scanner instance throughout the system, making it accessible anywhere and avoiding constructing multiple scanners. 
 public class SingleScanner {
-    static Scanner sc = null;
+    private static Scanner sc = null;
     private SingleScanner(){
         sc = new Scanner(System.in);
     }

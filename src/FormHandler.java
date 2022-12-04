@@ -2,19 +2,18 @@ public class FormHandler {
     public static final String[] paymentMethods = {"Credit","Cash","Wallet"} ;
 
     //0 for normal operation
-    //-1 for negative ammount
+    //-1 for negative amount
     //-2 for invalid payment method index
     //-3 for invalid phone number
     //-4 for paymentmethod error 
-    public int evaluateForm(String phoeNumber , double ammount , double discount , int paymentMethodIndex){
+    public int evaluateForm(String phoeNumber , double amount , double discount , int paymentMethodIndex){
 
-        if(ammount<0)
-            return -1;
+        if(amount<0)
+        {return -1;}
         if(paymentMethodIndex>paymentMethods.length || paymentMethodIndex<0)
-            return -2;
+        {return -2;}
         if(!phoeNumber.matches("-?\\d+(\\.\\d+)?") || phoeNumber.length()!=11)
-            return -3;
-
+        {return -3;}
         Paymentype paymentype;
 
         switch(paymentMethodIndex){
@@ -26,15 +25,15 @@ public class FormHandler {
                 paymentype = new WalletPayment();
                 break;
             
-            default : paymentype = new CreditPayment();
+            default : 
+                paymentype = new CreditPayment();
+                break;
         }
-        if(!paymentype.Pay(ammount))
-            return -4;
+        if(!paymentype.Pay(amount))
+            {return -4;}
 
-        Transaction transaction = new Transaction(Transaction.TYPE.PAYMENT , UserTerminal.currentService , UserTerminal.currentServiceProvider , paymentMethods[paymentMethodIndex], phoeNumber , ammount , discount  );
-
-        //TODO add transaction to user
-        //handle all transactions types
+        Transaction transaction = new Transaction(Transaction.TYPE.PAYMENT, UserTerminal.currentService, UserTerminal.currentServiceProvider, paymentMethods[paymentMethodIndex], phoeNumber, amount, discount);
+        UserController.account.addTransaction(transaction);
         return 0;
     }
 }

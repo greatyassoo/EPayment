@@ -4,16 +4,18 @@ import java.util.LinkedList;
 
     public static Account account;
 
-    UserController(LinkedList<Service> services , Account account , DiscountController discountController){
+    UserController(LinkedList<Service> services , Account a , DiscountController discountController){
         this.services = services;
-        this.account = account;
+        account = a;
         this.discountController = discountController;
     }
 
-    public boolean fundAccount(String CCN , String PIN , double ammount){
+    public boolean fundAccount(String CCN , String PIN , double amount){
         try {
-            account.setWalletBalance(account.getWalletBalance()+ammount);
-            account.addTransactions(new Transaction(Transaction.TYPE.TOP_UP, "Recharge", "CreditCard", "CreditCard", "", ammount, 0));
+            if(!CCN.matches("-?\\d+(\\.\\d+)?") || CCN.length()!=16)
+                return false;
+            account.setWalletBalance(account.getWalletBalance()+amount);
+            account.addTransaction(new Transaction(Transaction.TYPE.TOP_UP, "Recharge", "CreditCard", "CreditCard", "", amount, 0));
             return true;
         } catch (Exception e) {return false;}
     }
@@ -36,8 +38,11 @@ import java.util.LinkedList;
     }
 
     public LinkedList<String> getTransactions(){
-        LinkedList<String> transactionsNames = new LinkedList<String>();
-        return transactionsNames;
+        LinkedList<Transaction> transactions = account.getTransactions();
+        LinkedList<String> transactionsList = new LinkedList<String>();
+        for(int i=0 ; i<transactions.size() ; i++)
+            transactionsList.addLast(transactions.get(i).getAllInfo());
+        return transactionsList;
     }
 
     public LinkedList<String> getRefundRequests(){

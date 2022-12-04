@@ -1,7 +1,7 @@
 public class CashPayment implements Paymentype{
     @Override
-    public boolean Pay(double ammount) {
-        System.out.println("Payment Done Using Cash On Delivery ammount = "+ammount);
+    public boolean Pay(double amount) {
+        System.out.println("Payment Done Using Cash On Delivery amount = "+amount);
         return true;
     }
 }

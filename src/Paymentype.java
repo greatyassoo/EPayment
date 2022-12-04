@@ -1,3 +1,3 @@
 public interface Paymentype{
-    public abstract boolean Pay(double ammount);
+    public abstract boolean Pay(double amount);
 }

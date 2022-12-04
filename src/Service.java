@@ -6,13 +6,8 @@ public class Service {
     private String name;
     private LinkedList<String> serviceProviders;   
     private TemplateForm form;
-    
-    Service(String name, LinkedList<String> serviceProviders){
-        this.name = name;
-        this.serviceProviders = serviceProviders;
-    }
 
-    Service(String name, double initialDiscount , double serviceDiscount , LinkedList<String> serviceProviders, TemplateForm form){
+    Service(String name, LinkedList<String> serviceProviders, TemplateForm form){
         this.name = name;
         this.serviceProviders = serviceProviders;
         this.form = form;

@@ -12,12 +12,12 @@ public class AdminTerminal {
             System.out.print("===================\nName: "+"Admin"+"\n");
             System.out.print("===================\n1-Add new service provider.\n2-Set overall discount.\n3-Set service discount.\n4-List all accounts.\n5-List user transactions.\n6-Manage refunds.\n7-Logout.\nChoice:");
     
-            String choice = SingleScanner.getInstance().next();
+            String choice = Main.scanner.nextLine();
     
             System.out.print("===================\n");
             switch(choice){
             case "1":
-            	//addServiceProvider();
+            	addServiceProvider();
             	break;
             case "2":
 				if(!setOverAllDiscount()) System.out.print("Error, enter a positive number and try again.\n");
@@ -45,42 +45,50 @@ public class AdminTerminal {
         }while(true);
     }
 	
-	// public boolean addServiceProvider(){
-	// 	String serviceName;
-	// 	ServiceProvider tmp = new ServiceProvider();
-	// 	Form tmpForm = new Form();
-	// 	String providerName;
-	// 	int nTextBoxes;
-	// 	int nDropDowns;
-		
-	// 	Scanner scanner = new Scanner(System.in); 
-	// 	System.out.println("Enter service name: ");
-	// 	serviceName = scanner.nextLine();
-	// 	System.out.println("Enter service provider name: ");
-	// 	providerName = scanner.nextLine();
-	// 	tmp.name=providerName;
-	// 	System.out.println("Enter amount of textboxes: ");
-	// 	nTextBoxes = scanner.nextInt();
-	// 	System.out.println("Enter amount of dropdowns: ");
-	// 	nDropDowns = scanner.nextInt();
-		
-	// 	while(tmpForm.getTSize()<nTextBoxes)
-	// 	{
-	// 		String textBoxName;
-	// 		System.out.println("Enter name of text box: ");
-	// 		textBoxName = scanner.nextLine();
-	// 		tmpForm.addTextBox(textBoxName);
-	// 	}
-	// 	while(tmpForm.getDSize()<nDropDowns)
-	// 	{
-	// 		String dropDownName;
-	// 		System.out.println("Enter name of drop down: ");
-	// 		dropDownName = scanner.nextLine();
-	// 		tmpForm.addDropDown(dropDownName);
-	// 	}
-	// 	scanner.close();
-	// 	return controller.addServiceProvider(serviceName,tmp);
-	// }
+	public void addServiceProvider(){
+		int serviceIndex;
+		System.out.print("Enter service provider name: ");
+		String spName = Main.scanner.nextLine();
+		LinkedList <String> serviceNames = controller.getServicesNames("");
+		printStringList(serviceNames);
+		System.out.print("Enter service type: ");
+		String sType = Main.scanner.nextLine();
+		switch(sType)
+		{
+			case "1":
+				sType = "Mobile Recharge Service";
+				serviceIndex = controller.getServiceIndex(sType);
+				if(checkServiceProviderName(spName, serviceIndex))
+				{
+					controller.addServiceProvider(spName, sType);
+				}
+				break;
+			case "2":
+				sType = "Internet Payment Service";
+				serviceIndex = controller.getServiceIndex(sType);
+				if(checkServiceProviderName(spName, serviceIndex))
+				{
+					controller.addServiceProvider(spName, sType);
+				}
+				break;
+			case "3":
+				sType = "Landline";
+				serviceIndex = controller.getServiceIndex(sType);
+				if(checkServiceProviderName(spName, serviceIndex))
+				{
+					controller.addServiceProvider(spName, sType);
+				}
+				break;
+			case "4":
+				sType = "Donations";
+				serviceIndex = controller.getServiceIndex(sType);
+				if(checkServiceProviderName(spName, serviceIndex))
+				{
+					controller.addServiceProvider(spName, sType);
+				}
+				break;
+		}
+	};
 	
 	private void manageRefunds() {
 		LinkedList<LinkedList<String>> refunds = controller.getRefundRequests();
@@ -92,22 +100,21 @@ public class AdminTerminal {
 					System.out.print(refunds.get(i).get(j)+" ");
 				System.out.print("\n");
 			}
-
 			int choice;
 
 			do{
 				System.out.print("Choice: ");
-				choice = SingleScanner.getInstance().nextInt();
+				choice = Integer.parseInt(Main.scanner.nextLine());
 				choice--;
-				if(choice > refunds.size() || choice<0) System.out.print("Invalid, please choose from 1 to"+(refunds.size()+1)+".\n");
+				if(choice > refunds.size() || choice<0) {System.out.print("Invalid, please choose from 1 to"+(refunds.size()+1)+".\n");}
 			}while(choice > refunds.size() || choice<0);
 
-			System.out.print("===================\nPicked: ");
+			System.out.println("===================\nPicked: ");
 			for(int i=0 ; i<refunds.get(choice).size() ; i++)
-				System.out.print(refunds.get(i)+" ");
+				{System.out.print(refunds.get(choice).get(i)+" ");}
 
 			System.out.print("\nType Accept/Reject/Cancel: ");
-			String answer = SingleScanner.getInstance().nextLine();
+			String answer = Main.scanner.nextLine();
 
 			int result = controller.processRefundRequest(refunds.get(choice),answer);
 			
@@ -135,7 +142,7 @@ public class AdminTerminal {
 		System.out.print("Accounts:-\n");
         printStringList(controller.getAllAccounts());
 		System.out.print("Enter user number: ");
-		int accountIndex = SingleScanner.getInstance().nextInt();
+		int accountIndex = Integer.parseInt(Main.scanner.nextLine());
 		accountIndex--;
 
 		LinkedList<String> accountTransactions = controller.getAllAccountTransactions(accountIndex) ;
@@ -153,7 +160,7 @@ public class AdminTerminal {
 	public boolean setOverAllDiscount(){
 		System.out.print("Overall Discount: "+DiscountController.getOverAllDiscount()+"\n");
 		System.out.print("Enter discount amount: ");
-		double discountAmount = SingleScanner.getInstance().nextDouble();
+		double discountAmount = Double.parseDouble(Main.scanner.nextLine());
 		
 		return DiscountController.setOverAllDiscount(discountAmount);
 	}
@@ -163,9 +170,9 @@ public class AdminTerminal {
             System.out.print((i+1)+"-"+Service.Names.values()[i]+": "+controller.discountController.getServiceDiscount(Service.Names.values()[i])+"\n");
 		
 		System.out.print("Enter service number: ");
-		int serviceNumber = SingleScanner.getInstance().nextInt();
+		int serviceNumber = Integer.parseInt(Main.scanner.nextLine());
 		System.out.print("Enter discount amount: ");
-		double discountAmount = SingleScanner.getInstance().nextDouble();
+		double discountAmount = Double.parseDouble(Main.scanner.nextLine());
 		serviceNumber--;
 
 		if(Service.Names.values().length < serviceNumber || serviceNumber < 0)
@@ -181,5 +188,17 @@ public class AdminTerminal {
         for(int i=0 ; i< List.size() ; i++)
             System.out.print((i+1)+"-"+List.get(i)+".\n");
     }
+
+	public boolean checkServiceProviderName(String name,int index)
+	{
+		for(int i=0;i<controller.getService(index).getServiceProviders().size();i++)
+		{
+			if(name.equals(controller.getService(index).getServiceProviders().get(i)))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
 }

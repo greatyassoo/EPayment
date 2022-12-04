@@ -15,8 +15,8 @@ public class DiscountController {
     public static double getOverAllDiscount(){return overAllDiscount;}
     public double getServiceDiscount(Service.Names serviceName){return servicesDiscounts[serviceName.ordinal()];}
 
-    public void setServiceDiscount(Service.Names serviceName,double ammount){servicesDiscounts[serviceName.ordinal()]=ammount;}
-    public static boolean setOverAllDiscount(double ammount){if(ammount>0){overAllDiscount = ammount;return true;};return false;}
+    public void setServiceDiscount(Service.Names serviceName,double amount){servicesDiscounts[serviceName.ordinal()]=amount;}
+    public static boolean setOverAllDiscount(double amount){if(amount>0){overAllDiscount = amount;return true;};return false;}
 
     private void verifyOverAllDiscount(){
         if(UserController.account.getTransactions().size()==0 && overAllDiscount>discount)

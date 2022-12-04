@@ -77,7 +77,7 @@ public class AdminController extends ServicesController {
 
 		String userName = refund.get(0);
 		String service = refund.get(1);
-		double ammount = Double.parseDouble(refund.get(refund.size()-1));
+		double amount = Double.parseDouble(refund.get(refund.size()-1));
 		Account account = geAccount(userName);
 		
 		if(account==null)
@@ -88,7 +88,7 @@ public class AdminController extends ServicesController {
 		
 		for(int i=0 ; i<account.getRefundRequests().size() ; i++){
 			if(account.getTransaction(account.getRefundRequests().get(i)).getService().equals(service) 
-				&& account.getTransaction(account.getRefundRequests().get(i)).getAmount() == ammount){
+				&& account.getTransaction(account.getRefundRequests().get(i)).getAmount() == amount){
 				transactionIndx = account.getRefundRequests().get(i);
 				refundIndx = i;
 				break;
@@ -96,11 +96,11 @@ public class AdminController extends ServicesController {
 		}
 
 		if(answer.toLowerCase().equals("reject")&&transactionIndx!=-1){
-			account.addTransactions(new Transaction(Transaction.TYPE.REFUND_REJECTED, "Refund", "Admin", "", "", 0, 0));
+			account.addTransaction(new Transaction(Transaction.TYPE.REFUND_REJECTED, "Refund", "Admin", "", "", 0, 0));
 			account.removeRefundRequest(refundIndx);
 		}
 		else if(answer.toLowerCase().equals("accept")&&transactionIndx!=-1){
-			account.addTransactions(new Transaction(Transaction.TYPE.REFUND_ACCEPTED, "Refund", "Admin", "", "", -account.getTransaction(transactionIndx).getAmount(), 0));
+			account.addTransaction(new Transaction(Transaction.TYPE.REFUND_ACCEPTED, "Refund", "Admin", "", "", -account.getTransaction(transactionIndx).getAmount(), 0));
 			account.setWalletBalance(account.getWalletBalance()+account.getTransaction(transactionIndx).getAmount());
 			account.removeRefundRequest(refundIndx);
 		}

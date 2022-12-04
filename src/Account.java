@@ -21,6 +21,7 @@ public class Account {
 		this.userName = userName;
 		this.email = email;
 		this.password = password;
+		this.phoneNumber = phoneNumber;
 		this.transactions = new LinkedList<Transaction>();
 		this.refundRequests = new LinkedList<Integer>();
 	}
@@ -31,7 +32,7 @@ public class Account {
 	public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
 	public void setPassword(String password){this.password = password;}
 	public void setWalletBalance(Double walletBalance) {this.walletBalance = walletBalance;}
-	public void addTransactions(Transaction transactions) {this.transactions.addLast(transactions);}
+	public void addTransaction(Transaction transactions) {this.transactions.addLast(transactions);}
 	public void addRefundRequest(int index){this.refundRequests.addLast(index);};
 
 	// getters

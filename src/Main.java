@@ -1,39 +1,15 @@
 import java.util.*;
 
 public class Main {
-    // public static void main(String[] args) {
-
-        
-    //     LinkedList<String> serviceproviders = new LinkedList<String>();
-    //     serviceproviders.add("vodafone");
-    //     serviceproviders.add("Etisalat");
-        
-
-    //     LinkedList<Service> services = new LinkedList<Service>();
-    //     services.add(new Service("Mobile Recharge", 10,10, serviceproviders));
-
-    //     //Service landline = new Service("Landline", 10, 10,serviceProviders);
-
-
-
-    //     UserController controller = new UserController(services, new Account("Youssef", "123"));
-    //     controller.pay("Mobile Recharge", "vodafone");
-        
-    // }    
-    
-    
-    
-    
-    
-    
-    
-    
+       
     private static LinkedList<Service> services;
     private static LinkedList<Account> accounts;
     private static AccountsFetcher accountsFetcher;
     private static DiscountController discountController;
+    public static Scanner scanner;
 
     public static void main(String[] args) {
+        scanner = new Scanner(System.in);
         services = new LinkedList<Service>();
         accounts = new LinkedList<Account>();
         accountsFetcher = new AccountsFetcher(accounts);
@@ -45,7 +21,7 @@ public class Main {
         LoginTerminal terminal = new LoginTerminal(accountsFetcher);
         while(true){            
             System.out.print("===================\n1-Login.\n2-SignUp.\n3-Exit\n===================\nChoice: ");
-            String answer = SingleScanner.getInstance().nextLine();
+            String answer = Main.scanner.nextLine();
 
             if(answer.equals("1")){
                 Account tAccount = terminal.logIn();
@@ -63,14 +39,13 @@ public class Main {
                     System.out.println("Error Account invalid.");
             }
             else if(answer.equals("3")){
-                SingleScanner.getInstance().close();
+                Main.scanner.close();
                 return;
             }
             else{
                 System.out.println("Please Enter a valid choice.");
             }
         }
-
     }
 
     private static void User(Account account){
@@ -89,25 +64,25 @@ public class Main {
         sp1.addLast(("Etisalat"));
         sp1.addLast(("Orange"));
         sp1.addLast(("WE"));
-        Service s1 = new Service("Mobile Recharge", sp1);
+        Service s1 = new MobileRechargeServiceFactory().createService(sp1);
 
         LinkedList<String> sp2 = new LinkedList<String>();
         sp2.addLast(("Vodafone"));
         sp2.addLast(("Etisalat"));
         sp2.addLast(("Orange"));
         sp2.addLast(("WE"));
-        Service s2 = new Service("Internet payment", sp2);
+        Service s2 = new InternetServiceFormFactory().createService(sp2);
 
         LinkedList<String> sp3 = new LinkedList<String>();
         sp3.addLast("Monthly receipt");
         sp3.addLast("Quarter receipt");
-        Service s3 = new Service("Landline", sp3);
+        Service s3 = new LandlineServiceFormFactory().createService(sp3);
 
         LinkedList<String> sp4 = new LinkedList<String>();
         sp4.addLast("Cancer Hospital");
         sp4.addLast("Schools");
         sp4.addLast("NGOs (Non profitable organizations)");
-        Service s4 = new Service("Donations", sp3);
+        Service s4 = new DonationsServiceFormFactory().createService(sp4);
         
         services.addLast(s1);
         services.addLast(s2);

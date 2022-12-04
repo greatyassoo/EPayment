@@ -30,4 +30,9 @@ public abstract class ServicesController {
     	return -1;
     }
 
+    public Service getService(int index)
+    {
+        return services.get(index);
+    }
+
 }

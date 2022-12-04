@@ -17,7 +17,7 @@ public class UserTerminal {
             System.out.print("===================\nName: "+account.getUserName()+"\nWallet balance: "+account.getWalletBalance()+"\n");
             System.out.print("===================\n1-Search For service.\n2-List all services.\n3-Fund account.\n4-Make refund request.\n5-Show discounts\n6-LogOut.\nChoice: ");
     
-            String choice = SingleScanner.getInstance().nextLine();
+            String choice = Main.scanner.nextLine();
     
             String serviceName="";
             System.out.print("===================\n");
@@ -54,7 +54,7 @@ public class UserTerminal {
         printStringList(servicesNames);
         
         System.out.print("Enter Service number: ");
-        currentServiceIndex = SingleScanner.getInstance().nextInt();
+        currentServiceIndex = Integer.parseInt(Main.scanner.nextLine());
         currentServiceIndex--;
         
         if(servicesNames.size()<currentServiceIndex)
@@ -68,7 +68,7 @@ public class UserTerminal {
         printStringList(serviceProviders);
         System.out.print("===================\nEnter Service Provider: ");
         
-        currentServiceProviderIndex = SingleScanner.getInstance().nextInt();
+        currentServiceProviderIndex = Integer.parseInt(Main.scanner.nextLine());
         currentServiceProviderIndex--;
         
         if(serviceProviders.size()<currentServiceProviderIndex)
@@ -76,21 +76,21 @@ public class UserTerminal {
         
         currentServiceProvider = serviceProviders.get(currentServiceProviderIndex);
 
-        //TODO
-        controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider , controller.discountController.getDiscount(Service.Names.values()[currentServiceIndex]));
-
+        showForm();
     }
 
+    public void showForm(){controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider , controller.discountController.getDiscount(Service.Names.values()[currentServiceIndex]));}
+
     public void fundAccount(){
-        System.out.print("Enter creditCard number: ");
-        String CCN = SingleScanner.getInstance().nextLine();
-        System.out.print("Enter PIN: ");
-        String PIN = SingleScanner.getInstance().nextLine();
-        System.out.print("Enter ammount: ");
-        double ammount = SingleScanner.getInstance().nextDouble();
+        System.out.print("Payment Done Using Credit Card.\nCardNumber(16 digit only): ");;
+        String CCN = Main.scanner.nextLine();
+        System.out.print("PIN(4 digits only): ");
+        String PIN = Main.scanner.nextLine();
+        System.out.print("Enter amount: ");
+        double amount = Double.parseDouble(Main.scanner.nextLine());
         
-        if(controller.fundAccount(CCN, PIN, ammount))
-            System.out.print("Successfully Recharged "+ammount+" to the wallet.\n");
+        if(controller.fundAccount(CCN, PIN, amount))
+            System.out.print("Successfully Recharged "+amount+" to the wallet.\n");
         else
             System.out.print("Recharge unsuccessful.\n");
     }
@@ -99,22 +99,24 @@ public class UserTerminal {
         System.out.print("Refund Requests:-\n");
         printStringList(controller.getRefundRequests());
 
-        LinkedList<String> transactions = controller.getTransactions();
+        System.out.print("Transactions:-\n");
+        LinkedList<String> transactions = controller.getTransactions();  //fix this to make it list transactions
+        printStringList(transactions);
 
         System.out.print("Enter Transaction number: ");
-        int transactionIndex = SingleScanner.getInstance().nextInt();
+        int transactionIndex = Integer.parseInt(Main.scanner.nextLine());
         transactionIndex--;
 
-        if(transactions.size()<transactionIndex || transactionIndex <=0){
+        if(transactions.size()<transactionIndex || transactionIndex<0){
             System.out.print("Transaction not available.\n");
             return;
         }
         
         boolean isAdded = controller.addRefundRequest(transactionIndex);
         if(!isAdded)
-            System.out.print("Transaction number" + transactionIndex+1 +" already in refund requests.\n");
+            System.out.print("Transaction number" + (transactionIndex+1) +" already in refund requests.\n");
         else
-            System.out.print("Transaction number "+ transactionIndex+1 +" successfully added to refund requests.\n");
+            System.out.print("Transaction number "+ (transactionIndex+1) +" successfully added to refund requests.\n");
     }
 
     public void showDiscounts(){
