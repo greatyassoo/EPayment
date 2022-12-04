@@ -8,10 +8,10 @@ public class AdminController extends ServicesController {
 		this.discountController = discountController;
 	}
 	
-	public boolean addServiceProvider(String serviceName,String serviceProvider) {
+	public boolean addServiceProvider(int index,String serviceProvider) {
 		try {
-		int index = super.getServiceIndex(serviceName);
-		this.services.get(index).addServiceProvider(serviceProvider);
+			int serviceIndex = index;
+			super.services.get(serviceIndex).addServiceProvider(serviceProvider);
 		return true;
 		}
 		catch (Exception e) {return false;}

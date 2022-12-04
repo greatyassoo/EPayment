@@ -51,7 +51,7 @@ public class AdminTerminal {
 		String spName = Main.scanner.nextLine();
 		LinkedList <String> serviceNames = controller.getServicesNames("");
 		printStringList(serviceNames);
-		System.out.print("Enter service type: ");
+		System.out.print("Enter service type(1-4):  ");
 		String sType = Main.scanner.nextLine();
 		switch(sType)
 		{
@@ -60,7 +60,7 @@ public class AdminTerminal {
 				serviceIndex = controller.getServiceIndex(sType);
 				if(checkServiceProviderName(spName, serviceIndex))
 				{
-					controller.addServiceProvider(spName, sType);
+					controller.addServiceProvider(serviceIndex,spName);
 				}
 				break;
 			case "2":
@@ -68,7 +68,7 @@ public class AdminTerminal {
 				serviceIndex = controller.getServiceIndex(sType);
 				if(checkServiceProviderName(spName, serviceIndex))
 				{
-					controller.addServiceProvider(spName, sType);
+					controller.addServiceProvider(serviceIndex,spName);
 				}
 				break;
 			case "3":
@@ -76,7 +76,7 @@ public class AdminTerminal {
 				serviceIndex = controller.getServiceIndex(sType);
 				if(checkServiceProviderName(spName, serviceIndex))
 				{
-					controller.addServiceProvider(spName, sType);
+					controller.addServiceProvider(serviceIndex,spName);
 				}
 				break;
 			case "4":
@@ -84,7 +84,7 @@ public class AdminTerminal {
 				serviceIndex = controller.getServiceIndex(sType);
 				if(checkServiceProviderName(spName, serviceIndex))
 				{
-					controller.addServiceProvider(spName, sType);
+					controller.addServiceProvider(serviceIndex,spName);
 				}
 				break;
 		}
