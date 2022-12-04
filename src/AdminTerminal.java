@@ -158,17 +158,4 @@ public class AdminTerminal {
         for(int i=0 ; i< List.size() ; i++)
             System.out.print((i+1)+"-"+List.get(i)+".\n");
     }
-
-	public boolean checkServiceProviderName(String name,int index)
-	{
-		for(int i=0;i<controller.getService(index).getServiceProviders().size();i++)
-		{
-			if(name.equals(controller.getService(index).getServiceProviders().get(i)))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
 }
