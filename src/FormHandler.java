@@ -32,7 +32,7 @@ public class FormHandler {
         if(!paymentype.Pay(amount))
             {return -4;}
 
-        Transaction transaction = new Transaction(Transaction.TYPE.PAYMENT, UserTerminal.currentService, UserTerminal.currentServiceProvider, paymentMethods[paymentMethodIndex], phoeNumber, amount, discount);
+        Transaction transaction = new Transaction(Transaction.TYPE.PAYMENT, UserTerminal.currentService, UserTerminal.currentServiceProvider.getName(), paymentMethods[paymentMethodIndex], phoeNumber, amount, discount);
         UserController.account.addTransaction(transaction);
         return 0;
     }

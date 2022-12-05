@@ -59,29 +59,29 @@ public class Main {
     }
 
     private static void initializeServices() {
-        LinkedList<String> sp1 = new LinkedList<String>();
-        sp1.addLast(("Vodafone"));
-        sp1.addLast(("Etisalat"));
-        sp1.addLast(("Orange"));
-        sp1.addLast(("WE"));
+        LinkedList<ServiceProvider> sp1 = new LinkedList<ServiceProvider>();
+        sp1.addLast(new ServiceProvider("Vodafone"));
+        sp1.addLast(new ServiceProvider("Etisalat"));
+        sp1.addLast(new ServiceProvider("Orange"));
+        sp1.addLast(new ServiceProvider("WE"));
         Service s1 = new MobileRechargeServiceFactory().createService(sp1);
 
-        LinkedList<String> sp2 = new LinkedList<String>();
-        sp2.addLast(("Vodafone"));
-        sp2.addLast(("Etisalat"));
-        sp2.addLast(("Orange"));
-        sp2.addLast(("WE"));
+        LinkedList<ServiceProvider> sp2 = new LinkedList<ServiceProvider>();
+        sp2.addLast(new ServiceProvider("Vodafone"));
+        sp2.addLast(new ServiceProvider("Etisalat"));
+        sp2.addLast(new ServiceProvider("Orange"));
+        sp2.addLast(new ServiceProvider("WE"));
         Service s2 = new InternetServiceFormFactory().createService(sp2);
 
-        LinkedList<String> sp3 = new LinkedList<String>();
-        sp3.addLast("Monthly receipt");
-        sp3.addLast("Quarter receipt");
+        LinkedList<ServiceProvider> sp3 = new LinkedList<ServiceProvider>();
+        sp3.addLast(new ServiceProvider("Monthly receipt"));
+        sp3.addLast(new ServiceProvider("Quarter receipt"));
         Service s3 = new LandlineServiceFormFactory().createService(sp3);
 
-        LinkedList<String> sp4 = new LinkedList<String>();
-        sp4.addLast("Cancer Hospital");
-        sp4.addLast("Schools");
-        sp4.addLast("NGOs (Non profitable organizations)");
+        LinkedList<ServiceProvider> sp4 = new LinkedList<ServiceProvider>();
+        sp4.addLast(new ServiceProvider("Cancer Hospital"));
+        sp4.addLast(new ServiceProvider("Schools"));
+        sp4.addLast(new ServiceProvider("NGOs (Non profitable organizations)"));
         Service s4 = new DonationsServiceFormFactory().createService(sp4);
         
         services.addLast(s1);

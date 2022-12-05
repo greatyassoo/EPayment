@@ -7,12 +7,12 @@ public abstract class TemplateForm {
 
     public TemplateForm(){this.handler = new FormHandler();}
 
-    public void displayForm(String service, String serviceProviderName , double discount) // template method style function.
+    public void displayForm(String service, ServiceProvider serviceProviderName , double discount) // template method style function.
     {
         do{
             this.discount = discount;
             displayFormHeader(service); 
-            displayServiceProviderName(serviceProviderName); // has different implementations between different concretions
+            displayServiceProviderName(serviceProviderName.getName()); // has different implementations between different concretions
             displayDiscount();
             getPhoneNumber();
             getAmount();

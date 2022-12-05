@@ -10,10 +10,13 @@ public class AdminController extends ServicesController {
 	
 	public boolean addServiceProvider(int serviceIndex,String serviceProvider) {
 		try {
-		if(getService(serviceIndex).getServiceProviders().contains(serviceProvider))
-			return false;
-		getService(serviceIndex).addServiceProvider(serviceProvider);
-		return true;
+			if(checkServiceProviderNames(serviceIndex,serviceProvider))
+			{
+				System.out.println("Service provider alreadty exists!");
+				return false;
+			}
+			getService(serviceIndex).addServiceProvider(new ServiceProvider(serviceProvider));
+			return true;
 		}
 		catch (Exception e) {return false;}
 	}
@@ -104,5 +107,18 @@ public class AdminController extends ServicesController {
 			return -3;
 
 		return 0;
+	}
+	
+	private boolean checkServiceProviderNames(int serviceIndex,String name)
+	{
+		LinkedList <ServiceProvider> temp = getService(serviceIndex).getServiceProviders();
+		for(int i=0;i<temp.size();i++)
+		{
+			if(temp.get(i).spName.equals(name))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

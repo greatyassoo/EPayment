@@ -4,7 +4,8 @@ import java.util.Scanner;
 public class UserTerminal {
     private UserController controller ;
     private Account account;
-    public static String currentService="",currentServiceProvider="";
+    public static String currentService="";
+    public static ServiceProvider currentServiceProvider = null;
     private int currentServiceIndex,currentServiceProviderIndex;
 
     UserTerminal(LinkedList<Service> services , Account account , DiscountController discountController){
@@ -64,8 +65,8 @@ public class UserTerminal {
     }
  
     public void showServiceProvidersNames() throws ServiceProviderNameException,ServiceNameException{
-        LinkedList<String> serviceProviders = controller.getServiceProviders(currentService);
-        printStringList(serviceProviders);
+        LinkedList<ServiceProvider> serviceProviders = controller.getServiceProviders(currentService);
+        printServiceProviderList(serviceProviders);
         System.out.print("===================\nEnter Service Provider: ");
         
         currentServiceProviderIndex = Integer.parseInt(Main.scanner.nextLine());
@@ -75,11 +76,15 @@ public class UserTerminal {
             throw new ServiceProviderNameException(Integer.toString(currentServiceProviderIndex));
         
         currentServiceProvider = serviceProviders.get(currentServiceProviderIndex);
+        
+        //System.out.println(currentServiceProvider.getName());
+        //System.out.println(currentServiceProviderIndex);
+        
 
         showForm();
     }
 
-    public void showForm(){controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider , controller.discountController.getDiscount(Service.Names.values()[currentServiceIndex]));}
+    public void showForm(){controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider, controller.discountController.getDiscount(Service.Names.values()[currentServiceIndex]));}
 
     public void fundAccount(){
         System.out.print("Payment Done Using Credit Card.\nCardNumber(16 digit only): ");;
@@ -128,6 +133,10 @@ public class UserTerminal {
     private void printStringList(LinkedList<String> List){
         for(int i=0 ; i< List.size() ; i++)
             System.out.print((i+1)+"-"+List.get(i)+".\n");
+    }
+    private void printServiceProviderList(LinkedList<ServiceProvider> List){
+        for(int i=0 ; i< List.size() ; i++)
+            System.out.print((i+1)+"-"+List.get(i).getName()+".\n");
     }
     
 

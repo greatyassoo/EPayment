@@ -13,8 +13,8 @@ public abstract class ServicesController {
         return temp;
     }
 
-    public LinkedList<String> getServiceProviders(String serviceName){
-        LinkedList<String> temp = new LinkedList<String>();
+    public LinkedList<ServiceProvider> getServiceProviders(String serviceName){
+        LinkedList<ServiceProvider> temp = new LinkedList<ServiceProvider>();
         for(int i=0 ; i<services.size() ; i++){
             if(services.get(i).getName().toLowerCase().contains(serviceName.toLowerCase())){
                 temp = services.get(i).getServiceProviders();

@@ -15,9 +15,8 @@ public class Transaction {
         this.discount = discount;
         this.phoneNumber=phoneNumber;
     }
-       
     
-    //setters
+	//setters
     public void setService(String service) {this.service = service;}
     public void setServiceProvider(String serviceProvider) {this.serviceProvider = serviceProvider;}
     public void setPaymentMethod(String paymentMethod) {this.paymentMethod = paymentMethod;}
