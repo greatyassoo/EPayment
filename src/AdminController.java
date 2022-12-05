@@ -10,8 +10,7 @@ public class AdminController extends ServicesController {
 	
 	public boolean addServiceProvider(int serviceIndex,String serviceProvider) {
 		try {
-			if(checkServiceProviderNames(serviceIndex,serviceProvider))
-			{
+			if(checkServiceProviderNames(serviceIndex,serviceProvider)){
 				System.out.println("Service provider alreadty exists!");
 				return false;
 			}
@@ -29,7 +28,7 @@ public class AdminController extends ServicesController {
 		return tAccounts;
 	}
 
-	private Account geAccount(String userName){
+	public Account getAccount(String userName){
 		for(int i=0 ; i<accounts.size() ; i++)
 			if(accounts.get(i).getUserName()==userName)
 				return accounts.get(i);
@@ -71,13 +70,13 @@ public class AdminController extends ServicesController {
 	public int processRefundRequest(LinkedList<String> refund, String answer) {
 		if( answer.toLowerCase().equals("cancel"))
 			return -4;
-		if(! answer.toLowerCase().equals("accept") || !answer.toLowerCase().equals("reject"))
+		if(!answer.toLowerCase().equals("accept") && !answer.toLowerCase().equals("reject"))
 			return -1;
 
 		String userName = refund.get(0);
 		String service = refund.get(1);
 		double amount = Double.parseDouble(refund.get(refund.size()-1));
-		Account account = geAccount(userName);
+		Account account = getAccount(userName);
 		
 		if(account==null)
 			return -2;
@@ -109,15 +108,10 @@ public class AdminController extends ServicesController {
 		return 0;
 	}
 	
-	private boolean checkServiceProviderNames(int serviceIndex,String name)
-	{
+	private boolean checkServiceProviderNames(int serviceIndex,String name){
 		LinkedList <ServiceProvider> temp = getService(serviceIndex).getServiceProviders();
-		for(int i=0;i<temp.size();i++)
-		{
-			if(temp.get(i).spName.equals(name))
-			{
-				return true;
-			}
+		for(int i=0;i<temp.size();i++){
+			if(temp.get(i).getName().toLowerCase().equals(name.toLowerCase())){return true;}
 		}
 		return false;
 	}

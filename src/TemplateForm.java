@@ -3,16 +3,17 @@ public abstract class TemplateForm {
     private String phoneNumber;
     private FormHandler handler;
     private int paymentMethodIndex=0;
-    boolean checkPayment;
+    
 
     public TemplateForm(){this.handler = new FormHandler();}
 
-    public void displayForm(String service, ServiceProvider serviceProviderName , double discount) // template method style function.
+    public void displayForm(String service, ServiceProvider serviceProvider , double discount) // template method style function.
     {
+        boolean checkPayment=false;
         do{
             this.discount = discount;
             displayFormHeader(service); 
-            displayServiceProviderName(serviceProviderName.getName()); // has different implementations between different concretions
+            displayServiceProviderName(serviceProvider.getName()); // has different implementations between different concretions
             displayDiscount();
             getPhoneNumber();
             getAmount();
@@ -35,16 +36,13 @@ public abstract class TemplateForm {
             for(int i=0 ; i<FormHandler.paymentMethods.length ; i++)
             System.out.print((i+1)+"-"+FormHandler.paymentMethods[i]+".\n");
             System.out.print("Choice: ");
-            paymentMethodIndex = Integer.parseInt(Main.scanner.nextLine());
+            try{paymentMethodIndex = Integer.parseInt(Main.scanner.nextLine());}
+            catch(Exception e){};
             paymentMethodIndex--;
         }
 
         int output = handler.evaluateForm(phoneNumber, amount, discount, paymentMethodIndex) ;  
-        //0 for normal operation
-        //-1 for negative amount
-        //-2 for invalid payment method index
-        //-3 for invalid phone number
-        //-4 for paymentmethod error 
+ 
         if(output==-1)
             {System.out.print("Error, "+amount+" amount can't be negative.\n");
             return false;}

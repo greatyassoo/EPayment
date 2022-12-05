@@ -1,4 +1,9 @@
 import java.util.*;
+
+//There is only 1 admin account in the system
+//user name : admin
+//password : admin
+
 public class AdminTerminal {
 	
 	private AdminController controller;
@@ -53,66 +58,78 @@ public class AdminTerminal {
 		printStringList(services);
 
 		System.out.print("Enter service type number: ");
-		int serviceIndex = Integer.parseInt(Main.scanner.nextLine());
+		int serviceIndex = 0;
+		try{serviceIndex = Integer.parseInt(Main.scanner.nextLine());}
+		catch(Exception e){};
 		serviceIndex--;
 
 		try{controller.addServiceProvider(serviceIndex, serviceProvider);}
 		catch(Exception e){System.out.print("Error.\n");}
 	};
 	
-	private void manageRefunds() {
+	public void manageRefunds() {
 		LinkedList<LinkedList<String>> refunds = controller.getRefundRequests();
+		if(refunds.size()==0){
+			System.out.print("No available refund requests.\n");
+			return;
+		}
+
+		System.out.print("Refund requests:-\n===================\n");
+		for(int i=0 ; i<refunds.size() ; i++){
+			System.out.print((i+1)+"-");
+			for(int j=0 ; j <refunds.get(i).size() ; j++)
+				System.out.print(refunds.get(i).get(j)+" ");
+			System.out.print("\n");
+		}
+		int choice=0;
+
 		do{
-			System.out.print("Refund requests:-\n===================\n");
-			for(int i=0 ; i<refunds.size() ; i++){
-				System.out.print((i+1)+"-");
-				for(int j=0 ; j <refunds.get(i).size() ; j++)
-					System.out.print(refunds.get(i).get(j)+" ");
-				System.out.print("\n");
-			}
-			int choice;
+			System.out.print("Choice: ");
+			try{choice = Integer.parseInt(Main.scanner.nextLine());}
+			catch(Exception e){System.out.print("Invalid input.\n");};
+			choice--;
+			if(choice >= refunds.size() || choice<0) {System.out.print("Invalid, please choose from 1 to"+(refunds.size()+1)+".\n");}
+		}while(choice >= refunds.size() || choice<0);
 
-			do{
-				System.out.print("Choice: ");
-				choice = Integer.parseInt(Main.scanner.nextLine());
-				choice--;
-				if(choice > refunds.size() || choice<0) {System.out.print("Invalid, please choose from 1 to"+(refunds.size()+1)+".\n");}
-			}while(choice > refunds.size() || choice<0);
+		System.out.println("===================\nPicked: ");
+		for(int i=0 ; i<refunds.get(choice).size() ; i++)
+			{System.out.print(refunds.get(choice).get(i)+" ");}
 
-			System.out.println("===================\nPicked: ");
-			for(int i=0 ; i<refunds.get(choice).size() ; i++)
-				{System.out.print(refunds.get(choice).get(i)+" ");}
+		System.out.print("\nType Accept/Reject/Cancel: ");
+		String answer = Main.scanner.nextLine();
 
-			System.out.print("\nType Accept/Reject/Cancel: ");
-			String answer = Main.scanner.nextLine();
-
-			int result = controller.processRefundRequest(refunds.get(choice),answer);
-			
-			switch(result){
-				case 0 :
-					System.out.print(answer+"ed transaction "+(choice+1)+" successfully.\n");
-					return;
-				case -1 :
-					System.out.print(answer+" is invalid.\n");
-					break;
-				case -2 :
-					System.out.print("Error "+refunds.get(choice).get(0)+" couldn't be found !\n");
-					break;
-				case -3 :
-					System.out.print("Error with transaction/refund request.\n");
-					break;
-				case -4 :
-					System.out.print("Cancelling...\n");
-					return;	
-			}
-		}while(true);
+		int result = controller.processRefundRequest(refunds.get(choice),answer);
+		
+		switch(result){
+			case 0 :
+				System.out.print(answer+"ed transaction "+(choice+1)+" successfully.\n");
+				return;
+			case -1 :
+				System.out.print(answer+" is invalid.\n");
+				break;
+			case -2 :
+				System.out.print("Error "+refunds.get(choice).get(0)+" couldn't be found !\n");
+				break;
+			case -3 :
+				System.out.print("Error with transaction/refund request.\n");
+				break;
+			case -4 :
+				System.out.print("Cancelling...\n");
+				return;	
+		}
 	}
 
-	private void getAllAccountTransactions() {
+	public void getAllAccountTransactions() {
 		System.out.print("Accounts:-\n");
+		if(controller.getAllAccounts().size()==0){
+			System.out.print("No accounts regestered in the system yet.\n");
+			return;
+		}
         printStringList(controller.getAllAccounts());
 		System.out.print("Enter user number: ");
-		int accountIndex = Integer.parseInt(Main.scanner.nextLine());
+		int accountIndex = 0;
+		try{accountIndex = Integer.parseInt(Main.scanner.nextLine());}
+		catch(Exception e){};
 		accountIndex--;
 
 		LinkedList<String> accountTransactions = controller.getAllAccountTransactions(accountIndex) ;
@@ -139,10 +156,16 @@ public class AdminTerminal {
         for(int i=0 ; i<Service.Names.values().length ; i++)
             System.out.print((i+1)+"-"+Service.Names.values()[i]+": "+controller.discountController.getServiceDiscount(Service.Names.values()[i])+"\n");
 		
-		System.out.print("Enter service number: ");
-		int serviceNumber = Integer.parseInt(Main.scanner.nextLine());
-		System.out.print("Enter discount amount: ");
-		double discountAmount = Double.parseDouble(Main.scanner.nextLine());
+		int serviceNumber = 0;
+		double discountAmount = 0;
+		
+		try{
+			System.out.print("Enter service number: ");
+			serviceNumber = Integer.parseInt(Main.scanner.nextLine());
+			System.out.print("Enter discount amount: ");
+			discountAmount = Double.parseDouble(Main.scanner.nextLine());
+		}catch(Exception e){};
+		
 		serviceNumber--;
 
 		if(Service.Names.values().length < serviceNumber || serviceNumber < 0)
@@ -158,17 +181,4 @@ public class AdminTerminal {
         for(int i=0 ; i< List.size() ; i++)
             System.out.print((i+1)+"-"+List.get(i)+".\n");
     }
-
-	public boolean checkServiceProviderName(String name,int index)
-	{
-		for(int i=0;i<controller.getService(index).getServiceProviders().size();i++)
-		{
-			if(name.equals(controller.getService(index).getServiceProviders().get(i)))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
 }

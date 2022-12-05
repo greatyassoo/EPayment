@@ -5,7 +5,6 @@ public class Transaction {
     private double amount, discount;
     private TYPE type;
 
-    public Transaction() {};
     public Transaction(TYPE type, String service, String serviceProvider, String paymentMethod, String phoneNumber, double amount, double discount) {
         this.type = type;
         this.service = service; 
@@ -34,5 +33,5 @@ public class Transaction {
     public double getAmount() {return this.amount;}
     public double getDiscount() {return this.discount;}
     public String getPhoneNumber() {return this.phoneNumber;}
-    public String getAllInfo() {return type+":"+service+":"+serviceProvider+":"+amount+":"+paymentMethod;}
+    public String getAllInfo() {return type+":"+service+":"+serviceProvider+":"+amount+":"+paymentMethod+":"+discount;}
 }

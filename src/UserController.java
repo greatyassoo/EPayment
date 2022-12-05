@@ -20,14 +20,6 @@ import java.util.LinkedList;
         } catch (Exception e) {return false;}
     }
 
-    public LinkedList<String> getServicesNames(){
-        LinkedList<String> servicesNames = new LinkedList<String>();
-        for(int i=0 ; i<services.size() ; i++){
-            servicesNames.addLast(services.get(i).getName());
-        }
-        return servicesNames;
-    }
-
     public Service getService(String serviceName){
         Service temp=null;
         for(int i=0 ; i<services.size() ; i++){
@@ -51,7 +43,7 @@ import java.util.LinkedList;
         Transaction transaction;
         for(int i=0 ; i<refundRequestsIndx.size() ; i++){
             transaction = account.getTransaction(refundRequestsIndx.get(i));
-            String transactionString = transaction.getService()+":"+transaction.getServiceProvider()+":"+transaction.getAmount()+":"+transaction.getPaymentMethod()+":"+transaction.getDiscount();
+            String transactionString = transaction.getAllInfo();
             refundRequests.addLast(transactionString);
         }
         return refundRequests;
@@ -63,9 +55,4 @@ import java.util.LinkedList;
         account.addRefundRequest(indx);
         return true;
     }
-
-    // testing 
-    // public void pay(String serviceName, String serviceProviderName){
-    //     getService(serviceName).initForm(serviceProviderName);
-    // }
 }

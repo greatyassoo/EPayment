@@ -1,4 +1,4 @@
-public class CreditPayment implements Paymentype{
+public class CreditPayment implements PaymenType{
     @Override
     public boolean Pay(double amount) {
         System.out.print("Payment Done Using Credit Card.\nCardNumber(16 digit only): ");
