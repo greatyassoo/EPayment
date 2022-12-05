@@ -4,7 +4,8 @@ import java.util.Scanner;
 public class UserTerminal {
     private UserController controller ;
     private Account account;
-    public static String currentService="",currentServiceProvider="";
+    public static String currentService="";
+    public static ServiceProvider currentServiceProvider = null;
     private int currentServiceIndex,currentServiceProviderIndex;
 
     UserTerminal(LinkedList<Service> services , Account account , DiscountController discountController){
@@ -30,7 +31,7 @@ public class UserTerminal {
                            catch (ServiceNameException ex) {System.out.print(ex);break;}
                            catch (ServiceProviderNameException ex){System.out.print(ex);break;}
                            break;
-    
+                           
                 case "3" : fundAccount();
                            break;
 
@@ -51,10 +52,17 @@ public class UserTerminal {
     //returns all available services
     private void showServicesNames(String name) throws ServiceNameException{
         LinkedList<String> servicesNames = controller.getServicesNames(name);
+
+        if(servicesNames.size()==0){
+            currentService = "";
+            System.out.print("No matches found.\n");
+            return;
+        }
         printStringList(servicesNames);
         
         System.out.print("Enter Service number: ");
-        currentServiceIndex = Integer.parseInt(Main.scanner.nextLine());
+        try{currentServiceIndex = Integer.parseInt(Main.scanner.nextLine());}
+        catch(Exception e){};
         currentServiceIndex--;
         
         if(servicesNames.size()<currentServiceIndex)
@@ -64,11 +72,17 @@ public class UserTerminal {
     }
  
     public void showServiceProvidersNames() throws ServiceProviderNameException,ServiceNameException{
-        LinkedList<String> serviceProviders = controller.getServiceProviders(currentService);
-        printStringList(serviceProviders);
+        if(currentService=="")
+            return;
+        LinkedList<ServiceProvider> serviceProviders = controller.getServiceProviders(currentService);
+
+        for(int i=0 ; i< serviceProviders.size() ; i++)
+            System.out.print((i+1)+"-"+serviceProviders.get(i).getName()+".\n");
+
         System.out.print("===================\nEnter Service Provider: ");
         
-        currentServiceProviderIndex = Integer.parseInt(Main.scanner.nextLine());
+        try{currentServiceProviderIndex = Integer.parseInt(Main.scanner.nextLine());}
+        catch(Exception e){};
         currentServiceProviderIndex--;
         
         if(serviceProviders.size()<currentServiceProviderIndex)
@@ -79,7 +93,7 @@ public class UserTerminal {
         showForm();
     }
 
-    public void showForm(){controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider , controller.discountController.getDiscount(Service.Names.values()[currentServiceIndex]));}
+    public void showForm(){controller.getService(currentService).getForm().displayForm(currentService, currentServiceProvider, controller.discountController.getDiscount(Service.Names.values()[currentServiceIndex]));}
 
     public void fundAccount(){
         System.out.print("Payment Done Using Credit Card.\nCardNumber(16 digit only): ");;
@@ -104,7 +118,9 @@ public class UserTerminal {
         printStringList(transactions);
 
         System.out.print("Enter Transaction number: ");
-        int transactionIndex = Integer.parseInt(Main.scanner.nextLine());
+        int transactionIndex = 0;
+        try{ transactionIndex = Integer.parseInt(Main.scanner.nextLine());}
+        catch(Exception e){};
         transactionIndex--;
 
         if(transactions.size()<transactionIndex || transactionIndex<0){
@@ -114,7 +130,7 @@ public class UserTerminal {
         
         boolean isAdded = controller.addRefundRequest(transactionIndex);
         if(!isAdded)
-            System.out.print("Transaction number" + (transactionIndex+1) +" already in refund requests.\n");
+            System.out.print("Transaction number " + (transactionIndex+1) +" already in refund requests.\n");
         else
             System.out.print("Transaction number "+ (transactionIndex+1) +" successfully added to refund requests.\n");
     }
@@ -129,6 +145,5 @@ public class UserTerminal {
         for(int i=0 ; i< List.size() ; i++)
             System.out.print((i+1)+"-"+List.get(i)+".\n");
     }
-    
 
 }

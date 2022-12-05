@@ -1,9 +1,7 @@
 import java.util.LinkedList;
 public class InternetServiceFormFactory implements AbstractServiceFormFactory {
-    public Service createService(LinkedList<String> serviceProviders) {
-        TemplateForm internetForm = createForm();
-        return new Service("Internet Payment Service", serviceProviders, internetForm);
+    public Service createService(LinkedList<ServiceProvider> serviceProviders) {
+    	
+        return new Service("Internet Payment Service", serviceProviders,new InternetForm());
     }
-
-    public TemplateForm createForm() {return new InternetForm();} //returns InternetPayment form.
 }

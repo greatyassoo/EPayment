@@ -1,4 +1,4 @@
-public class WalletPayment implements Paymentype{
+public class WalletPayment implements PaymenType{
     @Override
     public boolean Pay(double amount) {
         System.out.print("Payment Done Using Cash from Wallet.\n");
