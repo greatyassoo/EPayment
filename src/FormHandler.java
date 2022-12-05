@@ -14,26 +14,26 @@ public class FormHandler {
         {return -2;}
         if(!phoneNumber.matches("-?\\d+(\\.\\d+)?") || phoneNumber.length()!=11)
         {return -3;}
-        PaymenType paymentype;
+        PaymentType paymentType;
 
         if(discount>0)
             amount*=discount;
 
         switch(paymentMethodIndex){
             case 1 : 
-                paymentype = new CashPayment();
+                paymentType = new CashPayment();
                 break;
 
             case 2 :
-                paymentype = new WalletPayment();
+                paymentType = new WalletPayment();
                 break;
             
             default : 
-                paymentype = new CreditPayment();
+                paymentType = new CreditPayment();
                 break;
         }
         
-        if(!paymentype.Pay(amount))
+        if(!paymentType.Pay(amount))
             {return -4;}
 
         Transaction transaction = new Transaction(Transaction.TYPE.PAYMENT, UserTerminal.currentService, UserTerminal.currentServiceProvider.getName(), paymentMethods[paymentMethodIndex], phoneNumber, amount, discount);
