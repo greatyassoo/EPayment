@@ -12,7 +12,7 @@ import java.util.LinkedList;
 
     public boolean fundAccount(String CCN , String PIN , double amount){
         try {
-            if(!CCN.matches("-?\\d+(\\.\\d+)?") || CCN.length()!=16)
+            if(!CCN.matches("-?\\d+(\\.\\d+)?") || CCN.length()!=16 || PIN.length()!=4 || !PIN.matches("-?\\d+(\\.\\d+)?"))
                 return false;
             account.setWalletBalance(account.getWalletBalance()+amount);
             account.addTransaction(new Transaction(Transaction.TYPE.TOP_UP, "Recharge", "CreditCard", "CreditCard", "", amount, 0));
