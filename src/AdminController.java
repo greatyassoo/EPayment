@@ -2,8 +2,8 @@ import java.util.*;
 public class AdminController extends ServicesController {
 	private LinkedList <Account>accounts;
 
-	AdminController(LinkedList<Service> services , LinkedList<Account> accounts , DiscountController discountController){
-		this.services = services ;
+	AdminController(ServicesDB servicesDB , LinkedList<Account> accounts , DiscountController discountController){
+		this.servicesDB = servicesDB ;
 		this.accounts = accounts ;
 		this.discountController = discountController;
 	}
@@ -64,7 +64,7 @@ public class AdminController extends ServicesController {
 	}
 
 	public String getServiceName(int index){
-		return services.get(index).getName();
+		return servicesDB.get(index).getName();
 	}
 
 	public int processRefundRequest(LinkedList<String> refund, String answer) {

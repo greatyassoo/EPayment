@@ -8,8 +8,8 @@ public class UserTerminal {
     public static ServiceProvider currentServiceProvider = null;
     private int currentServiceIndex,currentServiceProviderIndex;
 
-    UserTerminal(LinkedList<Service> services , Account account , DiscountController discountController){
-        this.controller = new UserController(services, account, discountController);
+    UserTerminal(ServicesDB servicesDB , Account account , DiscountController discountController){
+        this.controller = new UserController(servicesDB, account, discountController);
         this.account=account;
     }
 

@@ -4,8 +4,8 @@ import java.util.LinkedList;
 
     public static Account account;
 
-    UserController(LinkedList<Service> services , Account a , DiscountController discountController){
-        this.services = services;
+    UserController(ServicesDB servicesDB , Account a , DiscountController discountController){
+        this.servicesDB = servicesDB;
         account = a;
         this.discountController = discountController;
     }
@@ -22,9 +22,9 @@ import java.util.LinkedList;
 
     public Service getService(String serviceName){
         Service temp=null;
-        for(int i=0 ; i<services.size() ; i++){
-            if(services.get(i).getName()==serviceName)
-                temp=services.get(i);
+        for(int i=0 ; i<servicesDB.size() ; i++){
+            if(servicesDB.get(i).getName()==serviceName)
+                temp=servicesDB.get(i);
         }
         return temp;
     }

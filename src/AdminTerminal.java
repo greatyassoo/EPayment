@@ -8,8 +8,8 @@ public class AdminTerminal {
 	
 	private AdminController controller;
 
-    AdminTerminal(LinkedList<Service> services,LinkedList<Account> accounts,DiscountController discountController){
-        controller = new AdminController(services, accounts, discountController);
+    AdminTerminal(ServicesDB servicesDB,LinkedList<Account> accounts,DiscountController discountController){
+        controller = new AdminController(servicesDB, accounts, discountController);
     }
 	
 	public void showOptions(){
