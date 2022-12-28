@@ -9,14 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-
 //@RequestMapping("/v1")
 public class Authenticator implements AccountAuthentication{
     @Autowired
     private AccountsFetcher accountsFetcher;
     public static final String ADMIN_NAME = "admin", ADMIN_PASSWORD = "admin";
 
-    @Autowired
     Authenticator(AccountsFetcher accountsFetcher){
         this.accountsFetcher=accountsFetcher;
     }
@@ -52,7 +50,7 @@ public class Authenticator implements AccountAuthentication{
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/signUp")
+    @PostMapping("/signup")
     public ResponseEntity<Boolean> signUp(@RequestBody Account account) throws IllegalThreadStateException {
         System.out.println(account.getUserName()+" "+account.getPassword());
         
@@ -65,15 +63,3 @@ public class Authenticator implements AccountAuthentication{
     }
 
 }
-
-
-// {
-//     "userName": "admin",
-//     "email": null,
-//     "phoneNumber": null,
-//     "password": "admin",
-//     "walletBalance": 0.0,
-//     "transactions": [],
-//     "refundRequests": [],
-//     "allInfo": "admin:admin:null:null:0.0"
-// }

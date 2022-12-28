@@ -2,11 +2,13 @@ package com.phase2.epayment.AccountsDB;
 
 
 public class Transaction {
+    private static int tCounter = 0;
     public static enum TYPE {PAYMENT, REFUND_ACCEPTED , REFUND_REJECTED, TOP_UP}
 
     private String service,serviceProvider,paymentMethod,phoneNumber; 
     private double amount, discount;
     private TYPE type;
+    private int transactionID;
 
     public Transaction(TYPE type, String service, String serviceProvider, String paymentMethod, String phoneNumber, double amount, double discount) {
         this.type = type;
@@ -16,6 +18,7 @@ public class Transaction {
         this.amount = amount;
         this.discount = discount;
         this.phoneNumber=phoneNumber;
+        this.transactionID = tCounter++;
     }
     
 	//setters
@@ -36,5 +39,6 @@ public class Transaction {
     public double getAmount() {return this.amount;}
     public double getDiscount() {return this.discount;}
     public String getPhoneNumber() {return this.phoneNumber;}
-    public String getAllInfo() {return type+":"+service+":"+serviceProvider+":"+amount+":"+paymentMethod+":"+discount;}
+    public int getTransactionID() {return this.transactionID;}
+    public String getAllInfo() {return type+":"+transactionID+":"+service+":"+serviceProvider+":"+amount+":"+paymentMethod+":"+discount;}
 }

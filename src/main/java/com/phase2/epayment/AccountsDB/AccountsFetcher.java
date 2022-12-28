@@ -5,14 +5,8 @@ import java.util.LinkedList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @Component
-@RestController
 public class AccountsFetcher implements AccountAuthentication{
     private LinkedList<Account> accounts;
 
@@ -40,8 +34,7 @@ public class AccountsFetcher implements AccountAuthentication{
         return accounts.get(index);
     }
 
-    @GetMapping(value = "/accountID")
-    public ResponseEntity<Account> getAccount(@RequestParam("userName") String userName, @RequestParam("password") String password){
+    public Account getAccount(String userName, String password){
         Account temp=null;
         for(int i=0 ; i<accounts.size() ; i++){
             if(accounts.get(i).getUserName().equals(userName) && accounts.get(i).getPassword().equals(password)){
@@ -50,10 +43,22 @@ public class AccountsFetcher implements AccountAuthentication{
                 break;
             }
         }
-        return new ResponseEntity<>(temp,HttpStatus.OK);
+        return temp;
     }
 
-    public LinkedList<Account> getAccountsList(){
+    public Account getAccount(String userName){
+        Account temp=null;
+        for(int i=0 ; i<accounts.size() ; i++){
+            if(accounts.get(i).getUserName().equals(userName)){
+                accounts.addFirst(accounts.remove(i));
+                temp=accounts.get(i);
+                break;
+            }
+        }
+        return temp;
+    }
+
+    public LinkedList<Account> getAllAccounts(){
         return this.accounts;
     }
 

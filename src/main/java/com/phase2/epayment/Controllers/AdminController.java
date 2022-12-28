@@ -6,71 +6,58 @@ import com.phase2.epayment.AccountsDB.*;
 import java.util.*;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/admin-controller") // this means any mapping inside this class starts with "/admincontroller"
+@RequestMapping("/admin") // this means any mapping inside this class starts with "/adminc"
 public class AdminController extends ServicesController {
-	// private LinkedList <Account>accounts;
 	private AccountsFetcher accountsFetcher;
 
 	AdminController(ServicesDB servicesDB, AccountsFetcher accountsFetcher){
 		this.servicesDB = servicesDB ;
-		//this.discountController = discountController;
 		this.accountsFetcher = accountsFetcher;
 	}
-	
-	//TODO
-	public boolean addServiceProvider(int serviceIndex,String serviceProvider) {
+
+	@PostMapping(value = "/newsp")
+	public boolean addServiceProvider(@RequestParam("serviceName") String serviceName,@RequestParam("serviceProvider") String serviceProviderName) {
+		
 		try {
-			if(checkServiceProviderNames(serviceIndex,serviceProvider)){
+			if(getService(serviceName)==null) return false;
+			
+			if(checkServiceProviderNames(serviceName,serviceProviderName)){
 				System.out.println("Service provider alreadty exists!");
 				return false;
 			}
-			getService(serviceIndex).addServiceProvider(new ServiceProvider(serviceProvider));
+			getService(serviceName).addServiceProvider(new ServiceProvider(serviceProviderName));
 			return true;
 		}
 		catch (Exception e) {return false;}
 	}
 	
 
-	@GetMapping("all-accounts")
-	public LinkedList<String> getAllAccounts() {
-		LinkedList<Account> accounts = accountsFetcher.getAccountsList();
-		LinkedList<String> tAccounts = new LinkedList<String>();
-		for(int i=0 ; i<accounts.size() ; i++){
-			tAccounts.addLast(accounts.get(i).getAllInfo());
-		}
-		return tAccounts;
+	@GetMapping(value = "/all-accounts")
+	public LinkedList<Account> getAllAccounts() {
+		return accountsFetcher.getAllAccounts();
 	}
 
-	@GetMapping("account")
-	public Account getAccount(@RequestParam("userName") String userName){
-		LinkedList<Account> accounts = accountsFetcher.getAccountsList();
-		for(int i=0 ; i<accounts.size() ; i++)
-			if(accounts.get(i).getUserName().equals(userName))
-				return accounts.get(i);
-		throw new IllegalAccessError("Account does not exist.");
-	}
-
-	public LinkedList<String> getAllAccountTransactions(int accountIndex){	
-		LinkedList<Account> accounts = accountsFetcher.getAccountsList();
-		try {Account account = accounts.get(accountIndex);
-			LinkedList<String> transactionsString = new LinkedList<String>();
-			LinkedList<Transaction> transactions = account.getTransactions();
-			for(int i=0 ; i<transactions.size() ; i++){
-				transactionsString.addLast(transactions.get(i).getAllInfo());
-			}
-			return transactionsString;
+	@GetMapping(value = "/user-transaction")
+	public LinkedList<Transaction> getAllAccountTransactions(@RequestParam("userName") String userName){	
+		try {
+			Account account = accountsFetcher.getAccount(userName);
+			LinkedList<Transaction> transactions = account.getTransactions();	
+			return transactions;
 		} 
 		catch (Exception e) {return null;}
 	}
 
-	@GetMapping("all-refunds")
+	@GetMapping(value = "/refund-requests")
 	public LinkedList<LinkedList<String>> getRefundRequests(){
-		LinkedList<Account> accounts = accountsFetcher.getAccountsList();
+		LinkedList<Account> accounts = accountsFetcher.getAllAccounts();
 		LinkedList<LinkedList<String>> refundRequests = new LinkedList<LinkedList<String>>();
 		for(int i=0 ; i<accounts.size() ; i++){
 			for(int j=0 ; j<accounts.get(i).getRefundRequests().size() ; j++){
@@ -86,11 +73,14 @@ public class AdminController extends ServicesController {
 		return refundRequests;
 	}
 
-	public String getServiceName(int index){
-		return servicesDB.get(index).getName();
-	}
-
-	public int processRefundRequest(LinkedList<String> refund, String answer) {
+	//0 transaction added successfully
+	//-1 answer invalid
+	//-2 transaction couldn't be found
+	//-3 general error
+	//-4 cancel
+	@PutMapping(value = "/p-refund-request")
+	public int processRefundRequest(@RequestBody LinkedList<String> refund) {
+		String answer = refund.removeLast();
 		if( answer.toLowerCase().equals("cancel"))
 			return -4;
 		if(!answer.toLowerCase().equals("accept") && !answer.toLowerCase().equals("reject"))
@@ -99,7 +89,7 @@ public class AdminController extends ServicesController {
 		String userName = refund.get(0);
 		String service = refund.get(1);
 		double amount = Double.parseDouble(refund.get(refund.size()-1));
-		Account account = getAccount(userName);
+		Account account = accountsFetcher.getAccount(userName);
 		
 		if(account==null)
 			return -2;
@@ -131,10 +121,10 @@ public class AdminController extends ServicesController {
 		return 0;
 	}
 	
-	private boolean checkServiceProviderNames(int serviceIndex,String name){
-		LinkedList <ServiceProvider> temp = getService(serviceIndex).getServiceProviders();
+	private boolean checkServiceProviderNames(String serviceName,String serviceProviderName){
+		LinkedList <ServiceProvider> temp = getService(serviceName).getServiceProviders();
 		for(int i=0;i<temp.size();i++){
-			if(temp.get(i).getName().toLowerCase().equals(name.toLowerCase())){return true;}
+			if(temp.get(i).getName().toLowerCase().equals(serviceProviderName.toLowerCase())){return true;}
 		}
 		return false;
 	}

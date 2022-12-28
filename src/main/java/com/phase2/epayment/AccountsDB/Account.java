@@ -36,7 +36,7 @@ public class Account {
 	public void setPassword(String password){this.password = password;}
 	public void setWalletBalance(Double walletBalance) {this.walletBalance = walletBalance;}
 	public void addTransaction(Transaction transactions) {this.transactions.addLast(transactions);}
-	public void addRefundRequest(int index){this.refundRequests.addLast(index);};
+	public void addRefundRequest(int transactionID){this.refundRequests.addLast(transactionID);};
 
 	// getters
 	public String getUserName() {return this.userName;}
