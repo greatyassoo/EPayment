@@ -35,9 +35,9 @@ public class DiscountController {
      * @throws IlegallAccessError if service does not exist
      */
     @GetMapping("/user-discount")
-    public double getDiscount(@RequestParam("userName") String userName, @RequestParam("password") String password,
+    public double getUserDiscount(@RequestParam("userName") String userName, @RequestParam("password") String password,
             @RequestParam("serviceName") String serviceName) {
-                double discount = verifyOverAllDiscount(userName, password, serviceName); // user has one purchase verification
+                double discount = verifyOverAllDiscount(userName, password, serviceName); // user has no purchase verification
                 return discount;
     }
 

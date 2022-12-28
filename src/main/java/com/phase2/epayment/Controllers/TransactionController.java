@@ -47,7 +47,7 @@ public class TransactionController {
         String method = body.removeFirst();
         String phoneNumber = body.removeFirst();
         double amount = Double.parseDouble(body.getFirst());
-        double discount = discountController.getDiscount(userName, password, service);
+        double discount = discountController.getUserDiscount(userName, password, service);
         
         body.addFirst(String.valueOf(Double.parseDouble(body.removeFirst())*discount));
 
