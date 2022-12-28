@@ -47,8 +47,8 @@ public class TransactionController {
         String method = body.removeFirst();
         String phoneNumber = body.removeFirst();
         double amount = Double.parseDouble(body.getFirst());
+
         double discount = discountcontroller.getDiscount(userName, password, service);
-        
         body.addFirst(String.valueOf(Double.parseDouble(body.removeFirst())*discount));
 
         PaymentType paymentType;
