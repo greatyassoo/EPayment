@@ -22,11 +22,11 @@ import com.phase2.epayment.ServicesDB.WalletPayment;
 public class TransactionController {
 
     AccountsFetcher accountsFetcher;
-    DiscountController discountcontroller;
+    DiscountController discountController;
 
     TransactionController(AccountsFetcher accountsFetcher, DiscountController discountController){
         this.accountsFetcher = accountsFetcher;
-        this.discountcontroller = discountcontroller;
+        this.discountController = discountController;
     }
 
     public static final String[] paymentMethods = {"Credit","Cash","Wallet"} ;
@@ -47,8 +47,8 @@ public class TransactionController {
         String method = body.removeFirst();
         String phoneNumber = body.removeFirst();
         double amount = Double.parseDouble(body.getFirst());
-
-        double discount = discountcontroller.getDiscount(userName, password, service);
+        double discount = discountController.getDiscount(userName, password, service);
+        
         body.addFirst(String.valueOf(Double.parseDouble(body.removeFirst())*discount));
 
         PaymentType paymentType;

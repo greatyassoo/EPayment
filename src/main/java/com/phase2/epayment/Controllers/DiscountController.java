@@ -1,8 +1,11 @@
 package com.phase2.epayment.Controllers;
 
-import org.springframework.stereotype.Component;
+
 
 import java.util.LinkedList;
+
+
+
 import com.phase2.epayment.ServicesDB.*;
 import com.phase2.epayment.AccountsDB.AccountsFetcher;
 
@@ -12,30 +15,43 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Component
+
 @RestController
 @RequestMapping("/discount")
 public class DiscountController {
-    private static double overAllDiscount = 0;
-    private double discount = 0;
     private AccountsFetcher accountsFetcher;
     private ServicesDB servicesDB;
+
+
 
     DiscountController(AccountsFetcher accountsFetcher, ServicesDB servicesDB) {
         this.accountsFetcher = accountsFetcher;
         this.servicesDB = servicesDB;
     }
 
+    /**
+     * 
+     * @return overall discount if user has NO transactions, service discount otherwise.
+     * @throws IlegallAccessError if service does not exist
+     */
+    @GetMapping("/user-discount")
     public double getDiscount(@RequestParam("userName") String userName, @RequestParam("password") String password,
             @RequestParam("serviceName") String serviceName) {
-        verifyOverAllDiscount(userName, password);
-        verifyServiceDiscount(serviceName);
-        return discount;
+                double discount = verifyOverAllDiscount(userName, password, serviceName); // user has one purchase verification
+                return discount;
     }
 
-    @GetMapping(value = "/over-all-discount")
+    @GetMapping(value = "/overall-discount")
     public static double getOverAllDiscount() {
-        return overAllDiscount;
+        return Discount.getOverAllDiscount();
+    }
+
+
+    @PostMapping("/overall-discount")
+    public static void setOverAllDiscount(@RequestParam("amount") double amount) {
+        if (amount < 0) 
+            throw new IllegalArgumentException("Invalid value has been entered");
+        Discount.setOverAllDiscount(amount);
     }
 
     @GetMapping(value = "/service-discount")
@@ -44,46 +60,44 @@ public class DiscountController {
 
         for (int i = 0; i < services.size(); i++) {
             if (services.get(i).getName().equals(serviceName))
-                return servicesDiscounts[i];
+                return services.get(i).getDiscount().getServiceDiscount();
         }
         throw new IllegalAccessError("Service does not exist\n");
 
     }
 
-    @PostMapping(value = "/new-service-discount")
-    public String setServiceDiscount(@RequestParam("serviceName") String serviceName,
+    @PostMapping(value = "/service-discount")
+    public void setServiceDiscount(@RequestParam("serviceName") String serviceName,
             @RequestParam("amount") double amount) {
-
-        try {
             LinkedList<Service> services = servicesDB.getAllServices();
             for (int i = 0; i < services.size(); i++) {
-                if (services.get(i).getName().equals(serviceName)) {
-                    servicesDiscounts[i] = amount;
-                    return "Discount Added.";
+                if (services.get(i).getName().equals(serviceName)){
+                    services.get(i).getDiscount().setServiceDiscount(amount);
+                    return;
                 }
             }
-        } 
-        catch (Exception e) { throw new IllegalAccessError("Service does not exist."); }
-        return null;
+        throw new IllegalAccessError("Service does not exist\n");
     }
 
-    @PostMapping("new-over-all-discount")
-    public static boolean setOverAllDiscount(@RequestParam("amount") double amount) {
-        if (amount >= 0) {
-            overAllDiscount = amount;
-            return true;
+   
+
+    private double verifyOverAllDiscount(String userName, String password, String serviceName) throws IllegalAccessError {
+        LinkedList<Service> services = servicesDB.getAllServices();
+
+        boolean foundService = false;
+        int i = 0;
+        for (i = 0; i < services.size(); i++) {
+            if (services.get(i).getName().equals(serviceName)){
+                foundService = true;
+                break;   
+            }
         }
-        return false;
-    }
+        if (!foundService)
+            throw new IllegalAccessError("Service does not exist");
 
-    private void verifyOverAllDiscount(String userName, String password) {
-        if (accountsFetcher.getAccount(userName, password).getTransactions().size() == 0 && overAllDiscount > discount)
-            discount = overAllDiscount;
+        if (accountsFetcher.getAccount(userName, password).getTransactions().size() == 0 && Discount.getOverAllDiscount() > servicesDB.get(i).getDiscount().getServiceDiscount())
+            return Discount.getOverAllDiscount();
+        else
+            return servicesDB.get(i).getDiscount().getServiceDiscount();
     }
-
-    private void verifyServiceDiscount(Service.Names serviceName) {
-        if (servicesDiscounts[serviceName.ordinal()] > discount)
-            discount = servicesDiscounts[serviceName.ordinal()];
-    }
-
 }
