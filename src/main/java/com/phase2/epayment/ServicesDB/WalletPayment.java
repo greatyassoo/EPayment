@@ -1,11 +1,12 @@
 package com.phase2.epayment.ServicesDB;
+
+import java.util.LinkedList;
+
 public class WalletPayment implements PaymentType{
     @Override
-    public boolean Pay(String data) {
-        // System.out.print("Payment Done Using Cash from Wallet.\n");
-        // if(!(UserController.account.getWalletBalance()>=amount))
-        //     return false;
-        // UserController.account.setWalletBalance(UserController.account.getWalletBalance()-amount);
+    public boolean Pay(LinkedList<String> data) {
+        if(!(Double.parseDouble(data.getLast())>=Double.parseDouble(data.getFirst())))
+            return false;
         return true;
     }  
 }

@@ -28,7 +28,7 @@ public class AdminController extends ServicesController {
 		
 		try {
 			if(getService(serviceName)==null) return false;
-			
+
 			if(checkServiceProviderNames(serviceName,serviceProviderName)){
 				System.out.println("Service provider alreadty exists!");
 				return false;
@@ -128,4 +128,5 @@ public class AdminController extends ServicesController {
 		}
 		return false;
 	}
+	
 }

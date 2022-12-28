@@ -14,14 +14,11 @@ public class ServicesDB {
         initDB();
     }
 
-    public int size(){
-        return services.size();
-    }
+    public int size(){return services.size();}
 
-    public Service get(int index){
-        return services.get(index);
-    }
+    public Service get(int index){return services.get(index);}
 
+    public LinkedList<Service> getAllServices(){return this.services;}
 
     private void initDB(){
         LinkedList<ServiceProvider> mobileRechargeProviders = new LinkedList<ServiceProvider>();
@@ -54,5 +51,4 @@ public class ServicesDB {
         services.addLast(landLineService);
         services.addLast(donationsService);
     }
-    
 }
