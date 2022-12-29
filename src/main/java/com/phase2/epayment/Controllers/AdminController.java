@@ -46,9 +46,9 @@ public class AdminController extends ServicesController {
 	}
 
 	@GetMapping(value = "/user-transaction")
-	public LinkedList<Transaction> getAllAccountTransactions(@RequestParam("userName") String userName){	
+	public LinkedList<Transaction> getAllAccountTransactions(@RequestParam("userEmail") String userEmail){	
 		try {
-			Account account = accountsFetcher.getAccount(userName);
+			Account account = accountsFetcher.getAccount(userEmail);
 			LinkedList<Transaction> transactions = account.getTransactions();	
 			return transactions;
 		} 
@@ -64,7 +64,7 @@ public class AdminController extends ServicesController {
 				int indx = accounts.get(i).getRefundRequests().get(j);
 				Transaction transaction = accounts.get(i).getTransaction(indx);
 				LinkedList<String> temp = new LinkedList<String>();
-				temp.addLast(accounts.get(i).getUserName());
+				temp.addLast(accounts.get(i).getUserEmail());
 				temp.addLast(transaction.getService());
 				temp.addLast(Double.toString(transaction.getAmount()));
 				refundRequests.addLast(temp);
@@ -86,10 +86,10 @@ public class AdminController extends ServicesController {
 		if(!answer.toLowerCase().equals("accept") && !answer.toLowerCase().equals("reject"))
 			return -1;
 
-		String userName = refund.get(0);
+		String userEmail = refund.get(0);
 		String service = refund.get(1);
 		double amount = Double.parseDouble(refund.get(refund.size()-1));
-		Account account = accountsFetcher.getAccount(userName);
+		Account account = accountsFetcher.getAccount(userEmail);
 		
 		if(account==null)
 			return -2;

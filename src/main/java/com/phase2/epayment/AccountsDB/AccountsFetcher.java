@@ -16,9 +16,9 @@ public class AccountsFetcher implements AccountAuthentication{
         accounts.getFirst().setEmail("faristroller@fci.cringe");
     }
 
-    public ResponseEntity<Account> login(String uName , String password){ 
+    public ResponseEntity<Account> signIn(String uName , String password){ 
         for(int i=0 ; i<accounts.size() ; i++){
-            if(accounts.get(i).getUserName().equals(uName) && accounts.get(i).getPassword().equals(password)){
+            if(accounts.get(i).getUserEmail().equals(uName) && accounts.get(i).getPassword().equals(password)){
                 return new ResponseEntity<>(accounts.get(i),HttpStatus.OK);
             }
         }
@@ -34,10 +34,10 @@ public class AccountsFetcher implements AccountAuthentication{
         return accounts.get(index);
     }
 
-    public Account getAccount(String userName, String password){
+    public Account getAccount(String userEmail, String password){
         Account temp=null;
         for(int i=0 ; i<accounts.size() ; i++){
-            if(accounts.get(i).getUserName().equals(userName) && accounts.get(i).getPassword().equals(password)){
+            if(accounts.get(i).getUserEmail().equals(userEmail) && accounts.get(i).getPassword().equals(password)){
                 accounts.addFirst(accounts.remove(i));
                 temp=accounts.get(i);
                 break;
@@ -46,10 +46,10 @@ public class AccountsFetcher implements AccountAuthentication{
         return temp;
     }
 
-    public Account getAccount(String userName){
+    public Account getAccount(String userEmail){
         Account temp=null;
         for(int i=0 ; i<accounts.size() ; i++){
-            if(accounts.get(i).getUserName().equals(userName)){
+            if(accounts.get(i).getUserEmail().equals(userEmail)){
                 accounts.addFirst(accounts.remove(i));
                 temp=accounts.get(i);
                 break;

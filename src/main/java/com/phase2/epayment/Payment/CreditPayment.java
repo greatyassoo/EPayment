@@ -1,4 +1,4 @@
-package com.phase2.epayment.ServicesDB;
+package com.phase2.epayment.Payment;
 
 import java.util.LinkedList;
 

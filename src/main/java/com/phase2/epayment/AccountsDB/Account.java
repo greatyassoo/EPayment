@@ -2,7 +2,7 @@ package com.phase2.epayment.AccountsDB;
 import java.util.LinkedList;
 
 public class Account {
-	private String userName;
+	private String name;
 	private String email;
 	private String phoneNumber;
 	private String password;
@@ -13,15 +13,15 @@ public class Account {
 	public Account(){};
 
 	//Used for admin only
-	public Account(String userName,String password){
-		this.userName=userName;
+	public Account(String name,String password){
+		this.name=name;
 		this.password=password;
 		this.transactions = new LinkedList<Transaction>();
 		this.refundRequests = new LinkedList<Integer>();
 	}
 
-	Account(String userName,String password,String email, String phoneNumber){
-		this.userName = userName;
+	Account(String name,String password,String email, String phoneNumber){
+		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.phoneNumber = phoneNumber;
@@ -30,7 +30,7 @@ public class Account {
 	}
 	
 	// setters
-	public void setUserName(String name){this.userName = name;}
+	public void setUserName(String name){this.name = name;}
 	public void setEmail(String email) {this.email = email;}
 	public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
 	public void setPassword(String password){this.password = password;}
@@ -39,15 +39,14 @@ public class Account {
 	public void addRefundRequest(int transactionID){this.refundRequests.addLast(transactionID);};
 
 	// getters
-	public String getUserName() {return this.userName;}
-	public String getEmail() {return this.email;}
+	public String getUserName() {return this.name;}
+	public String getUserEmail() {return this.email;}
 	public String getPhoneNumber() {return this.phoneNumber;}
 	public String getPassword() {return this.password;}	
 	public Double getWalletBalance() {return this.walletBalance;}
 	public Transaction getTransaction(int indx) {return transactions.get(indx);}
 	public LinkedList<Transaction> getTransactions() {return this.transactions;}
 	public LinkedList<Integer> getRefundRequests() {return this.refundRequests;}
-	public String getAllInfo(){return userName+":"+password+":"+email+":"+phoneNumber+":"+walletBalance;}
 
 	public boolean removeTransaction(int index){
 		try{transactions.remove(index);}
@@ -58,9 +57,5 @@ public class Account {
 		try{refundRequests.remove(index);}
 		catch(Exception e){return false;}
 		return true;
-	}
-
-	public String toString() {
-        return String.format("userName:%s,password:%d,email:%s,phoneNumber:%s", userName, password, email, phoneNumber);
 	}
 }

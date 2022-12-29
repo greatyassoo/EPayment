@@ -1,4 +1,4 @@
-package com.phase2.epayment.Controllers;
+package com.phase2.epayment.Payment;
 
 import java.util.LinkedList;
 
@@ -11,10 +11,6 @@ import com.phase2.epayment.AccountsDB.Account;
 import com.phase2.epayment.AccountsDB.AccountsFetcher;
 import com.phase2.epayment.AccountsDB.Transaction;
 import com.phase2.epayment.AccountsDB.Transaction.TYPE;
-import com.phase2.epayment.ServicesDB.CashPayment;
-import com.phase2.epayment.ServicesDB.CreditPayment;
-import com.phase2.epayment.ServicesDB.PaymentType;
-import com.phase2.epayment.ServicesDB.WalletPayment;
 
 
 @RestController
@@ -36,9 +32,9 @@ public class TransactionController {
     @PostMapping(value = "/pay")
     public boolean pay(@RequestBody LinkedList<String> body) throws Exception{
 
-        String userName = body.removeFirst();
+        String userEmail = body.removeFirst();
         String password = body.removeFirst();
-        Account account = accountsFetcher.getAccount(userName,password);
+        Account account = accountsFetcher.getAccount(userEmail,password);
         if(account==null)
             throw new IllegalAccessError("Account does not exist");
             
@@ -47,7 +43,7 @@ public class TransactionController {
         String method = body.removeFirst();
         String phoneNumber = body.removeFirst();
         double amount = Double.parseDouble(body.getFirst());
-        double discount = discountController.getUserDiscount(userName, password, service);
+        double discount = discountController.getUserDiscount(userEmail, password, service);
         
         body.addFirst(String.valueOf(Double.parseDouble(body.removeFirst())*discount));
 

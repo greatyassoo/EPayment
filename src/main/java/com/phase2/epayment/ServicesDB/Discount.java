@@ -5,26 +5,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class Discount {
     
-    private double discount;
+    private double serviceDiscount;
     private static double overAllDiscount;
     
-    public Discount(double discount, double overAllDiscount)
+    public Discount(double serviceDiscount, double overAllDiscount)
     {
-        this.discount = discount;
-        this.discount = overAllDiscount;
+        this.serviceDiscount = serviceDiscount;
+        overAllDiscount = overAllDiscount;
     }
 
     public Discount(){
-        this.discount = 0;
+        this.serviceDiscount = 0;
         overAllDiscount = 0;
     }
     
     // getters
     public static double getOverAllDiscount() {return overAllDiscount;}
-    public double getServiceDiscount() {return discount;}
+    public double getServiceDiscount() {return serviceDiscount;}
     
     // setters
-    public void setServiceDiscount(double discount) {this.discount = discount;}
+    public void setServiceDiscount(double serviceDiscount) {this.serviceDiscount = serviceDiscount;}
     public static void setOverAllDiscount(double newOverallDiscount) {overAllDiscount = newOverallDiscount;}
 }
 

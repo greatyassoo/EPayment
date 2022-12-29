@@ -1,4 +1,4 @@
-package com.phase2.epayment.Controllers;
+package com.phase2.epayment.Payment;
 
 
 
@@ -35,9 +35,9 @@ public class DiscountController {
      * @throws IlegallAccessError if service OR account do not exist
      */
     @GetMapping("/user-discount")
-    public double getUserDiscount(@RequestParam("userName") String userName, @RequestParam("password") String password,
+    public double getUserDiscount(@RequestParam("userEmail") String userEmail, @RequestParam("password") String password,
             @RequestParam("serviceName") String serviceName) {
-                return verifyOverallDiscount(userName, password, serviceName);
+                return verifyOverallDiscount(userEmail, password, serviceName);
     }
 
     @GetMapping(value = "/overall-discount")
@@ -80,9 +80,9 @@ public class DiscountController {
 
    
 
-    private double verifyOverallDiscount(String userName, String password, String serviceName) throws IllegalAccessError {
+    private double verifyOverallDiscount(String userEmail, String password, String serviceName) throws IllegalAccessError {
         // check if account exists.
-        if ((accountsFetcher.getAccount(userName, password) == null))
+        if ((accountsFetcher.getAccount(userEmail, password) == null))
             throw new IllegalAccessError("Account does not exist");
         
         LinkedList<Service> services = servicesDB.getAllServices();
@@ -99,7 +99,7 @@ public class DiscountController {
         if (!foundService)
             throw new IllegalAccessError("Service does not exist");
 
-        if (accountsFetcher.getAccount(userName, password).getTransactions().size() == 0 && Discount.getOverAllDiscount() > servicesDB.get(i).getDiscount().getServiceDiscount())
+        if (accountsFetcher.getAccount(userEmail, password).getTransactions().size() == 0 && Discount.getOverAllDiscount() > servicesDB.get(i).getDiscount().getServiceDiscount())
             return Discount.getOverAllDiscount();
         else
             return servicesDB.get(i).getDiscount().getServiceDiscount();
