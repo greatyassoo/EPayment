@@ -32,13 +32,12 @@ public class DiscountController {
     /**
      * 
      * @return overall discount if user has NO transactions, service discount otherwise.
-     * @throws IlegallAccessError if service does not exist
+     * @throws IlegallAccessError if service OR account do not exist
      */
     @GetMapping("/user-discount")
     public double getUserDiscount(@RequestParam("userName") String userName, @RequestParam("password") String password,
             @RequestParam("serviceName") String serviceName) {
-                double discount = verifyOverAllDiscount(userName, password, serviceName); // user has no purchase verification
-                return discount;
+                return verifyOverallDiscount(userName, password, serviceName);
     }
 
     @GetMapping(value = "/overall-discount")
@@ -81,7 +80,11 @@ public class DiscountController {
 
    
 
-    private double verifyOverAllDiscount(String userName, String password, String serviceName) throws IllegalAccessError {
+    private double verifyOverallDiscount(String userName, String password, String serviceName) throws IllegalAccessError {
+        // check if account exists.
+        if ((accountsFetcher.getAccount(userName, password) == null))
+            throw new IllegalAccessError("Account does not exist");
+        
         LinkedList<Service> services = servicesDB.getAllServices();
 
         boolean foundService = false;
@@ -92,6 +95,7 @@ public class DiscountController {
                 break;   
             }
         }
+        // if service not found
         if (!foundService)
             throw new IllegalAccessError("Service does not exist");
 
