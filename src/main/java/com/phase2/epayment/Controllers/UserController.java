@@ -1,6 +1,7 @@
 package com.phase2.epayment.Controllers;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +25,13 @@ public class UserController extends ServicesController {
 
     //[ userEmail,password,CCN,PIN,amount ]
     @PostMapping(value = "/fund")
-    public boolean fundAccount(@RequestBody LinkedList<String> body) {
-        String userEmail = body.removeFirst();
-        String password = body.removeFirst();
-        String CCN = body.removeFirst();
-        String PIN = body.removeFirst();
-        Double amount = Double.parseDouble(body.removeFirst());
+    public boolean fundAccount(@RequestBody Map<String,String> body) {
+
+        String userEmail = body.get("userEmail");
+        String password = body.get("password");
+        String CCN = body.get("CCN");
+        String PIN = body.get("PIN");
+        Double amount = Double.parseDouble(body.get("amount"));
         
         Account account = getAccount(userEmail, password);
         try {
@@ -49,11 +51,7 @@ public class UserController extends ServicesController {
     
     @GetMapping(value = "/service")
     public LinkedList<Service> getServices(@RequestParam("serviceName") String serviceName) {
-        LinkedList<Service> temp = new LinkedList<>();
-        for (int i = 0; i < servicesDB.size(); i++){
-            if (servicesDB.get(i).getName().toLowerCase().contains(serviceName.toLowerCase()))
-                temp.addLast(servicesDB.get(i));
-        }
+        LinkedList<Service> temp = servicesDB.getServices(serviceName);
         if(temp.size()==0)
             throw new IllegalAccessError("No match found.");
         return temp;
@@ -66,7 +64,7 @@ public class UserController extends ServicesController {
         return account.getTransactions();
     }
 
-    @GetMapping(value = "/refund-requests")
+    @GetMapping(value = "/refund-request")
     public LinkedList<Transaction> getRefundRequests(@RequestParam("userEmail") String userEmail,
             @RequestParam("password") String password) {
         Account account = getAccount(userEmail, password);
@@ -79,11 +77,11 @@ public class UserController extends ServicesController {
     }
 
     //[ userEmail,password,transactionID ]
-    @PostMapping(value = "/new-refund")
-    public boolean addRefundRequest(@RequestBody LinkedList<String> body) {
-        String userEmail = body.removeFirst();
-        String password = body.removeFirst();
-        int transactionID = Integer.parseInt(body.removeFirst());
+    @PostMapping(value = "/refund-request")
+    public boolean addRefundRequest(@RequestBody Map<String,String> body) {
+        String userEmail = body.get("userEmail");
+        String password = body.get("password");
+        int transactionID = Integer.parseInt(body.get("transactionID"));
         
         Account account = getAccount(userEmail, password);
 

@@ -1,7 +1,7 @@
 package com.phase2.epayment.Payment;
 
-import java.util.LinkedList;
+import java.util.Map;
 
 public interface PaymentType{
-    public abstract boolean Pay(LinkedList<String> data);
+    public abstract boolean Pay(Map<String,String> data);
 }

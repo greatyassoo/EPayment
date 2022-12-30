@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class Authenticator implements AccountAuthentication{
     @Autowired
     private AccountsFetcher accountsFetcher;
-    public static final String ADMIN_NAME = "admin", ADMIN_PASSWORD = "admin";
+
 
     Authenticator(AccountsFetcher accountsFetcher){
         this.accountsFetcher=accountsFetcher;
     }
 
-    private int authenticatesignIn(String userEmail, String password) { // -1 for error, 0 for admin, 1 for user.
-        if (userEmail.equals(ADMIN_NAME) && password.equals(ADMIN_PASSWORD))
+    private int authenticateSignIn(String userEmail, String password) { // -1 for error, 0 for admin, 1 for user.
+        if (accountsFetcher.checkAdminAccount(userEmail, password))
             return 0; // admin
 
         for(int i = 0; i < accountsFetcher.getSize(); i++){
@@ -33,9 +33,10 @@ public class Authenticator implements AccountAuthentication{
     }
 
     private boolean authenticateSignup(Account account){
+        if(accountsFetcher.checkAdminAccount(account.getUserEmail()))
+            return false;
         for(int i = 0; i < accountsFetcher.getSize(); i++){
-            if(account.getUserEmail().equals(ADMIN_NAME) || 
-            accountsFetcher.getAccount(i).getUserEmail().equals(account.getUserEmail()) || 
+            if(accountsFetcher.getAccount(i).getUserEmail().equals(account.getUserEmail()) || 
             accountsFetcher.getAccount(i).getUserName().equals(account.getUserName()))
                 return false;
         }
@@ -46,10 +47,10 @@ public class Authenticator implements AccountAuthentication{
     public ResponseEntity<Account> signIn(@RequestParam("userEmail") String userEmail,@RequestParam("password") String password)throws IllegalAccessError {
         //System.out.println(userEmail+" "+password);
 
-        int choice = authenticatesignIn(userEmail, password);
+        int choice = authenticateSignIn(userEmail, password);
         switch(choice){
             case -1 : throw new IllegalAccessError("Wrong Credentials!"); // return error
-            case 0 : return new ResponseEntity<>(new Account(ADMIN_NAME, ADMIN_PASSWORD),HttpStatus.OK); // return admin account
+            // case 0 : throw new Account(userEmail,password);
             case 1 : return accountsFetcher.signIn(userEmail, password); // return user account
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

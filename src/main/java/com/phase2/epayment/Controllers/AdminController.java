@@ -7,25 +7,33 @@ import java.util.*;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/admin") // this means any mapping inside this class starts with "/adminc"
+@RequestMapping("/admin") // this means any mapping inside this class starts with "/admin"
 public class AdminController extends ServicesController {
 	private AccountsFetcher accountsFetcher;
 
 	AdminController(ServicesDB servicesDB, AccountsFetcher accountsFetcher){
-		this.servicesDB = servicesDB ;
+		this.servicesDB = servicesDB;
 		this.accountsFetcher = accountsFetcher;
 	}
 
-	@PostMapping(value = "/newsp")
-	public boolean addServiceProvider(@RequestParam("serviceName") String serviceName,@RequestParam("serviceProvider") String serviceProviderName) {
-		
+	/**
+     * 
+     * @param serviceName the name of the service the provider is going to be added to.
+	 * @param serviceProviderName the name of the serviceProvider to be added to the service.
+     */
+	@PostMapping(value = "/service-provider")
+	public boolean addServiceProvider(@RequestBody Map<String, String> body) {
+		String serviceName = body.get("serviceName");
+		String serviceProviderName = body.get("serviceProviderName");
+
+		System.out.println(serviceName+" "+serviceProviderName);
+
 		try {
 			if(getService(serviceName)==null) return false;
 
@@ -55,7 +63,7 @@ public class AdminController extends ServicesController {
 		catch (Exception e) {return null;}
 	}
 
-	@GetMapping(value = "/refund-requests")
+	@GetMapping(value = "/refund-request")
 	public LinkedList<LinkedList<String>> getRefundRequests(){
 		LinkedList<Account> accounts = accountsFetcher.getAllAccounts();
 		LinkedList<LinkedList<String>> refundRequests = new LinkedList<LinkedList<String>>();
@@ -78,17 +86,19 @@ public class AdminController extends ServicesController {
 	//-2 transaction couldn't be found
 	//-3 general error
 	//-4 cancel
-	@PutMapping(value = "/p-refund-request")
-	public int processRefundRequest(@RequestBody LinkedList<String> refund) {
-		String answer = refund.removeLast();
+
+	
+	@PostMapping(value = "/refund-request")
+	public int processRefundRequest(@RequestBody Map<String,String> body) {
+		String answer = body.get("answer");
 		if( answer.toLowerCase().equals("cancel"))
 			return -4;
 		if(!answer.toLowerCase().equals("accept") && !answer.toLowerCase().equals("reject"))
 			return -1;
 
-		String userEmail = refund.get(0);
-		String service = refund.get(1);
-		double amount = Double.parseDouble(refund.get(refund.size()-1));
+		String userEmail = body.get("userEmail");
+		String service = body.get("service");
+		double amount = Double.parseDouble(body.get("amount"));
 		Account account = accountsFetcher.getAccount(userEmail);
 		
 		if(account==null)

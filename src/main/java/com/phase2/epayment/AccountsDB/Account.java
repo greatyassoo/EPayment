@@ -12,14 +12,6 @@ public class Account {
 
 	public Account(){};
 
-	//Used for admin only
-	public Account(String name,String password){
-		this.name=name;
-		this.password=password;
-		this.transactions = new LinkedList<Transaction>();
-		this.refundRequests = new LinkedList<Integer>();
-	}
-
 	Account(String name,String password,String email, String phoneNumber){
 		this.name = name;
 		this.email = email;

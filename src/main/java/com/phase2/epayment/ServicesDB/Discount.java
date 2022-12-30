@@ -8,10 +8,9 @@ public class Discount {
     private double serviceDiscount;
     private static double overAllDiscount;
     
-    public Discount(double serviceDiscount, double overAllDiscount)
-    {
+    public Discount(double serviceDiscount, double overallDiscount){
         this.serviceDiscount = serviceDiscount;
-        overAllDiscount = overAllDiscount;
+        overAllDiscount = overallDiscount;
     }
 
     public Discount(){
@@ -24,7 +23,7 @@ public class Discount {
     public double getServiceDiscount() {return serviceDiscount;}
     
     // setters
-    public void setServiceDiscount(double serviceDiscount) {this.serviceDiscount = serviceDiscount;}
     public static void setOverAllDiscount(double newOverallDiscount) {overAllDiscount = newOverallDiscount;}
+    public void setServiceDiscount(double serviceDiscount) {this.serviceDiscount = serviceDiscount;}
 }
 

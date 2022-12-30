@@ -1,6 +1,7 @@
 package com.phase2.epayment.Payment;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,48 +12,54 @@ import com.phase2.epayment.AccountsDB.Account;
 import com.phase2.epayment.AccountsDB.AccountsFetcher;
 import com.phase2.epayment.AccountsDB.Transaction;
 import com.phase2.epayment.AccountsDB.Transaction.TYPE;
-
+import com.phase2.epayment.ServicesDB.Service;
+import com.phase2.epayment.ServicesDB.ServicesDB;
 
 @RestController
 @RequestMapping(value = "/transaction")
-public class TransactionController {
+public class PaymentController {
 
     AccountsFetcher accountsFetcher;
     DiscountController discountController;
+    ServicesDB servicesDB;
 
-    TransactionController(AccountsFetcher accountsFetcher, DiscountController discountController){
+    PaymentController(AccountsFetcher accountsFetcher, DiscountController discountController, ServicesDB servicesDB){
         this.accountsFetcher = accountsFetcher;
         this.discountController = discountController;
+        this.servicesDB = servicesDB;
     }
-
-    public static final String[] paymentMethods = {"Credit","Cash","Wallet"} ;
 
     // body structure
     //[ userName,password,service,serviceProvider,paymentMethod,phoneNumber,amount,{payment type data} ] 
     @PostMapping(value = "/pay")
-    public boolean pay(@RequestBody LinkedList<String> body) throws Exception{
+    public boolean pay(@RequestBody Map<String,String> body) throws Exception{
 
-        String userEmail = body.removeFirst();
-        String password = body.removeFirst();
+        String userEmail = body.get("userEmail");
+        String password = body.get("password");
         Account account = accountsFetcher.getAccount(userEmail,password);
         if(account==null)
             throw new IllegalAccessError("Account does not exist");
             
-        String service = body.removeFirst();
-        String serviceProvider = body.removeFirst();
-        String method = body.removeFirst();
-        String phoneNumber = body.removeFirst();
-        double amount = Double.parseDouble(body.getFirst());
-        double discount = discountController.getUserDiscount(userEmail, password, service);
+        String serviceName = body.get("serviceName");
+        Service service;
+        try {
+            service = servicesDB.getServices(serviceName).get(0);
+        } catch (Exception e) {throw new IllegalAccessError("Service not found.");};
         
-        body.addFirst(String.valueOf(Double.parseDouble(body.removeFirst())*discount));
+        
+        String serviceProviderName = body.get("serviceProvider");
+        String method = body.get("paymentMethod");
+        String phoneNumber = body.get("phoneNumber");
+        double discount = discountController.getUserDiscount(userEmail, password, serviceName);
+
+        body.put("amount", String.valueOf(Double.parseDouble(body.get("amount"))*discount));
+        body.put("walletBalance", String.valueOf(account.getWalletBalance()));
 
         PaymentType paymentType;
         switch(method.toLowerCase()){
             case("wallet"):
                 //{payment type data} = [wallet balance]
                 paymentType = new WalletPayment();
-                body.addLast(String.valueOf(account.getWalletBalance()));
                 break;
 
             case("cash"):
@@ -66,13 +73,16 @@ public class TransactionController {
                 break;
         }    
 
+        if(!service.getPaymentTypes().contains(paymentType))
+            throw new IllegalAccessError("Payment method not allowed.");
+
         if(!paymentType.Pay(body))
             return false;
         
         if(method.toLowerCase()=="wallet")
-            account.setWalletBalance(account.getWalletBalance()-(amount*discount));
+            account.setWalletBalance(account.getWalletBalance()-(Double.parseDouble(body.get("amount"))));
         
-        account.addTransaction(new Transaction(TYPE.PAYMENT, service, serviceProvider, method, phoneNumber, amount, discount));
+        account.addTransaction(new Transaction(TYPE.PAYMENT, serviceName, serviceProviderName, method, phoneNumber, Double.parseDouble(body.get("amount")), discount));
         return true;
     }   
 }

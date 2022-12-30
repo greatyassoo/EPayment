@@ -22,8 +22,6 @@ public class DiscountController {
     private AccountsFetcher accountsFetcher;
     private ServicesDB servicesDB;
 
-
-
     DiscountController(AccountsFetcher accountsFetcher, ServicesDB servicesDB) {
         this.accountsFetcher = accountsFetcher;
         this.servicesDB = servicesDB;
@@ -45,7 +43,6 @@ public class DiscountController {
         return Discount.getOverAllDiscount();
     }
 
-
     @PostMapping("/overall-discount")
     public static void setOverAllDiscount(@RequestParam("amount") double amount) {
         if (amount < 0) 
@@ -62,7 +59,6 @@ public class DiscountController {
                 return services.get(i).getDiscount().getServiceDiscount();
         }
         throw new IllegalAccessError("Service does not exist\n");
-
     }
 
     @PostMapping(value = "/service-discount")
