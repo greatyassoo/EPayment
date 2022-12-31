@@ -19,11 +19,16 @@ public class Discount {
     }
     
     // getters
-    public static double getOverAllDiscount() {return overAllDiscount;}
+    public double getOverAllDiscount() {    
+        double temp = overAllDiscount;
+        return temp;
+    }
+    public static double getStaticOverAllDiscount(){return overAllDiscount;}
     public double getServiceDiscount() {return serviceDiscount;}
     
     // setters
     public static void setOverAllDiscount(double newOverallDiscount) {overAllDiscount = newOverallDiscount;}
     public void setServiceDiscount(double serviceDiscount) {this.serviceDiscount = serviceDiscount;}
+
 }
 

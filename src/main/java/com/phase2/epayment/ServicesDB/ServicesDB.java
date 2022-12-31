@@ -1,6 +1,8 @@
 package com.phase2.epayment.ServicesDB;
 
 import java.util.LinkedList;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.phase2.epayment.Payment.CashPayment;
@@ -16,7 +18,6 @@ public class ServicesDB {
     
     public ServicesDB(LinkedList<Service> services) {
         this.services = services;
-        initDB();
     }
 
     public int size(){return services.size();}
@@ -31,14 +32,17 @@ public class ServicesDB {
         return temp;
     }
     
+    @Autowired
     private void initDB(){
 
         Discount discount = new Discount();
+        
         LinkedList<PaymentType> acceptedPayments = new LinkedList<>();
         acceptedPayments.addLast(new CashPayment());
         acceptedPayments.addLast(new CreditPayment());
         acceptedPayments.addLast(new WalletPayment());
         LinkedList<ServiceProvider> mobileRechargeProviders = new LinkedList<ServiceProvider>();
+
         mobileRechargeProviders.addLast(new ServiceProvider("Vodafone"));
         mobileRechargeProviders.addLast(new ServiceProvider("Etisalat"));
         mobileRechargeProviders.addLast(new ServiceProvider("Orange"));

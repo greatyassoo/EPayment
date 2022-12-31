@@ -22,47 +22,58 @@ public class Authenticator implements AccountAuthentication{
     }
 
     private int authenticateSignIn(String userEmail, String password) { // -1 for error, 0 for admin, 1 for user.
-        if (accountsFetcher.checkAdminAccount(userEmail, password))
+        if (accountsFetcher.getAdminAccount(userEmail)!=null)
             return 0; // admin
 
-        for(int i = 0; i < accountsFetcher.getSize(); i++){
-            if(accountsFetcher.getAccount(i).getUserEmail().equals(userEmail) && accountsFetcher.getAccount(i).getPassword().equals(password))
-                return 1; // user
-        }
+        if(accountsFetcher.getAccount(userEmail, password)!=null)
+            return 1; // user
+        
         return -1; // error
     }
 
     private boolean authenticateSignup(Account account){
-        if(accountsFetcher.checkAdminAccount(account.getUserEmail()))
+        if(accountsFetcher.getAdminAccount(account.getUserEmail())!=null)
             return false;
-        for(int i = 0; i < accountsFetcher.getSize(); i++){
-            if(accountsFetcher.getAccount(i).getUserEmail().equals(account.getUserEmail()) || 
-            accountsFetcher.getAccount(i).getUserName().equals(account.getUserName()))
-                return false;
-        }
-        return true;
+        if(accountsFetcher.getAccount(account.getUserEmail())!=null)
+            return false;
+        return true;    
     }
 
+     /**
+     * signs in account if provided credentials are correct
+     *
+     * @param userEmail the email of the user
+     * @param password the password of the user
+     * @return response entity of type account if account exists
+     * @throws IlegallAccessError if account does not exist
+     */
     @GetMapping(value = "/sign-in")
-    public ResponseEntity<Account> signIn(@RequestParam("userEmail") String userEmail,@RequestParam("password") String password)throws IllegalAccessError {
+    public ResponseEntity<Account> signIn(@RequestParam("userEmail") String userEmail,@RequestParam("password") String password){
         //System.out.println(userEmail+" "+password);
 
         int choice = authenticateSignIn(userEmail, password);
         switch(choice){
             case -1 : throw new IllegalAccessError("Wrong Credentials!"); // return error
-            // case 0 : throw new Account(userEmail,password);
+            case 0 : return new ResponseEntity<>(null,HttpStatus.ACCEPTED);
             case 1 : return accountsFetcher.signIn(userEmail, password); // return user account
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }   
-
-    @PostMapping("/sign-up")
-    public ResponseEntity<Boolean> signUp(@RequestBody Account account) throws IllegalThreadStateException {
+    }
+    
+     /**
+     * signs up account 
+     *
+     * @param account the account that will be added to the systems
+     * @return response entity of type boolean
+     * @throws IllegalArgumentException if account exists
+     */
+    @PostMapping(value = "/sign-up")
+    public ResponseEntity<Boolean> signUp(@RequestBody Account account) throws IllegalArgumentException {
         //System.out.println(account.getUserEmail()+" "+account.getPassword());
         
         // if account exists, return false because signup fails.
         if(!authenticateSignup(account)) 
-            throw new IllegalStateException("Account Exists");
+            throw new IllegalArgumentException("Account Exists");
 
         accountsFetcher.signUp(account);
         return new ResponseEntity<>(true,HttpStatus.ACCEPTED);

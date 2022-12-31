@@ -57,21 +57,18 @@ public class AccountsFetcher implements AccountAuthentication{
 
     public Account getAccount(int index) {return accounts.get(index);}
 
-    public void addAdminAccount(AdminAccount adminAccount){ adminAccounts.addLast(adminAccount);}
-
-    public boolean checkAdminAccount(String adminEmail){
-        for(int i=0 ; i<adminAccounts.size() ; i++)
-            if(adminAccounts.get(i).adminEmail.equals(adminEmail))
-                return true;
-        return false;
+    public AdminAccount getAdminAccount(String adminEmail) {
+        AdminAccount temp=null;
+        for(int i=0 ; i<adminAccounts.size() ; i++){
+            if(adminAccounts.get(i).adminEmail.equals(adminEmail)){
+                temp=adminAccounts.get(i);
+                break;
+            }
+        }
+        return temp;
     }
 
-    public boolean checkAdminAccount(String adminEmail,String adminPassword){
-        for(int i=0 ; i<adminAccounts.size() ; i++)
-            if(adminAccounts.get(i).adminEmail.equals(adminEmail) && adminAccounts.get(i).adminPassword.equals(adminPassword))
-                return true;
-        return false;
-    }
+    public void addAdminAccount(AdminAccount adminAccount){adminAccounts.addLast(adminAccount);}
 
     public LinkedList<Account> getAllAccounts(){return this.accounts;}
 

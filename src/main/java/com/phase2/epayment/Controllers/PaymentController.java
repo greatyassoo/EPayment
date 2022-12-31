@@ -1,6 +1,5 @@
-package com.phase2.epayment.Payment;
+package com.phase2.epayment.Controllers;
 
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +11,11 @@ import com.phase2.epayment.AccountsDB.Account;
 import com.phase2.epayment.AccountsDB.AccountsFetcher;
 import com.phase2.epayment.AccountsDB.Transaction;
 import com.phase2.epayment.AccountsDB.Transaction.TYPE;
+import com.phase2.epayment.Payment.CashPayment;
+import com.phase2.epayment.Payment.CreditPayment;
+import com.phase2.epayment.Payment.DiscountController;
+import com.phase2.epayment.Payment.PaymentType;
+import com.phase2.epayment.Payment.WalletPayment;
 import com.phase2.epayment.ServicesDB.Service;
 import com.phase2.epayment.ServicesDB.ServicesDB;
 

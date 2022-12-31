@@ -3,7 +3,8 @@ package com.phase2.epayment.Controllers;
 import com.phase2.epayment.ServicesDB.*;
 import com.phase2.epayment.AccountsDB.*;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
+
+//TODO add an option to register new admins 
 
 @RestController
 @RequestMapping("/admin") // this means any mapping inside this class starts with "/admin"
@@ -29,6 +32,13 @@ public class AdminController extends ServicesController {
      */
 	@PostMapping(value = "/service-provider")
 	public boolean addServiceProvider(@RequestBody Map<String, String> body) {
+		String adminEmail = body.get("adminEmail");
+		String password = body.get("password");
+		
+		if(! checkAdminAccount(adminEmail, password)){
+			throw new IllegalAccessError("admin account not valid");
+		}
+
 		String serviceName = body.get("serviceName");
 		String serviceProviderName = body.get("serviceProviderName");
 
@@ -47,14 +57,19 @@ public class AdminController extends ServicesController {
 		catch (Exception e) {return false;}
 	}
 	
-
 	@GetMapping(value = "/all-accounts")
-	public LinkedList<Account> getAllAccounts() {
+	public LinkedList<Account> getAllAccounts(@RequestParam("adminEmail") String adminEmail , @RequestParam("password") String password) {
+		if(! checkAdminAccount(adminEmail, password))
+			throw new IllegalAccessError("admin account not valid");
 		return accountsFetcher.getAllAccounts();
 	}
 
 	@GetMapping(value = "/user-transaction")
-	public LinkedList<Transaction> getAllAccountTransactions(@RequestParam("userEmail") String userEmail){	
+	public LinkedList<Transaction> getAllAccountTransactions(@RequestParam("adminEmail") String adminEmail ,@RequestParam("password") String password
+	,@RequestParam("userEmail") String userEmail){	
+		if(! checkAdminAccount(adminEmail, password))
+			throw new IllegalAccessError("admin account not valid");
+
 		try {
 			Account account = accountsFetcher.getAccount(userEmail);
 			LinkedList<Transaction> transactions = account.getTransactions();	
@@ -64,7 +79,10 @@ public class AdminController extends ServicesController {
 	}
 
 	@GetMapping(value = "/refund-request")
-	public LinkedList<LinkedList<String>> getRefundRequests(){
+	public LinkedList<LinkedList<String>> getRefundRequests(@RequestParam("adminEmail") String adminEmail ,@RequestParam("password") String password){
+		if(! checkAdminAccount(adminEmail, password))
+			throw new IllegalAccessError("admin account not valid");
+
 		LinkedList<Account> accounts = accountsFetcher.getAllAccounts();
 		LinkedList<LinkedList<String>> refundRequests = new LinkedList<LinkedList<String>>();
 		for(int i=0 ; i<accounts.size() ; i++){
@@ -86,10 +104,15 @@ public class AdminController extends ServicesController {
 	//-2 transaction couldn't be found
 	//-3 general error
 	//-4 cancel
-
-	
 	@PostMapping(value = "/refund-request")
 	public int processRefundRequest(@RequestBody Map<String,String> body) {
+		String adminEmail = body.get("adminEmail");
+		String password = body.get("password");
+		
+		if(! checkAdminAccount(adminEmail, password)){
+			throw new IllegalAccessError("admin account not valid");
+		}
+
 		String answer = body.get("answer");
 		if( answer.toLowerCase().equals("cancel"))
 			return -4;
@@ -137,6 +160,15 @@ public class AdminController extends ServicesController {
 			if(temp.get(i).getName().toLowerCase().equals(serviceProviderName.toLowerCase())){return true;}
 		}
 		return false;
+	}
+
+	private boolean checkAdminAccount(String adminEmail , String password){
+		AdminAccount adminAccount = accountsFetcher.getAdminAccount(adminEmail);
+		if(adminAccount==null)
+			return false;
+		if(adminAccount.getPassword()!=password)
+			return false;
+		return true;
 	}
 	
 }

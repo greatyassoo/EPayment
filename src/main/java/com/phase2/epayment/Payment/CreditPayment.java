@@ -2,7 +2,7 @@ package com.phase2.epayment.Payment;
 
 import java.util.Map;
 
-public class CreditPayment implements PaymentType{
+public class CreditPayment extends PaymentType{
     @Override
     public boolean Pay(Map<String,String> data) {
         String CCN = data.get("CCN");
