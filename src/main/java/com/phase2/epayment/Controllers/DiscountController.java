@@ -1,12 +1,11 @@
-package com.phase2.epayment.Payment;
-
-
+package com.phase2.epayment.Controllers;
 
 import java.util.LinkedList;
 import java.util.Map;
 
 import com.phase2.epayment.ServicesDB.*;
 import com.phase2.epayment.AccountsDB.AccountsFetcher;
+import com.phase2.epayment.AccountsDB.AdminAccount;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,27 +27,22 @@ public class DiscountController {
     }
 
     /**
-     * @param userEmail the email of the user
-     * @param password the password of the user
-     * @param serviceName the name of the service 
-     * @return overall discount if user has NO transactions, service discount otherwise.
-     * @throws IlegallAccessError if service OR account do not exist
-     */
+    * checks and returns specified user applicable discount
+    * 
+    * @param userEmail the email of the user
+    * @param password the password of the user
+    * @param serviceName the name of the service 
+    * @return overall discount if user has NO transactions, service discount otherwise.
+    * @throws IlegallAccessError if service OR account do not exist
+    */
     @GetMapping("/user-discount")
-    public double getUserDiscount(@RequestParam("userEmail") String userEmail, @RequestParam("password") String password,
+    public double getUserDiscount(@RequestParam("userEmail") String userEmail, 
+            @RequestParam("password") String password,
             @RequestParam("serviceName") String serviceName) {
                 return verifyOverallDiscount(userEmail, password, serviceName);
     }
 
-
-     /**
-     * @return current overall discount
-     */
-    @GetMapping(value = "/overall-discount")
-    public double getOverAllDiscount() {
-        return Discount.getStaticOverAllDiscount();
-    }
-
+    //TODO added admin checking 
     /**
     * sets the overall discount with given amount
     *
@@ -60,7 +54,14 @@ public class DiscountController {
     * ie: "serviceName": "Mobile Recharge Service" 
     */
     @PostMapping("/overall-discount")
-    public static void setOverAllDiscount(@RequestBody Map<String,String> body) {
+    public void setOverAllDiscount(@RequestBody Map<String,String> body) {
+        String adminEmail = body.get("adminEmail");
+        String password = body.get("password");
+
+        if(! checkAdminAccount(adminEmail, password)){
+            throw new IllegalAccessError("admin account not valid");
+        }
+
         double amount = Double.parseDouble(body.get("amount"));
 
         if (amount < 0) 
@@ -68,18 +69,20 @@ public class DiscountController {
         Discount.setOverAllDiscount(amount);
     }
 
-    @GetMapping(value = "/service-discount")
-    public double getServiceDiscount(@RequestParam("serviceName") String serviceName) throws Exception {
-        LinkedList<Service> services = servicesDB.getAllServices();
+    //TODO rename me pls
+    @GetMapping(value = "/discount")
+    public Discount checkServiceDiscount(@RequestParam("serviceName") String serviceName) {
+        
+        LinkedList<Service> services = servicesDB.getServices(serviceName);
 
-        for (int i = 0; i < services.size(); i++) {
-            if (services.get(i).getName().equals(serviceName))
-                return services.get(i).getDiscount().getServiceDiscount();
-        }
+        if(services!=null)
+            return services.get(0).getDiscount();
+        
         throw new IllegalAccessError("Service does not exist\n");
     }
 
 
+    //TODO added admin checking 
     /**
     * sets the service discount of the given service discount with given amount
     *
@@ -94,8 +97,15 @@ public class DiscountController {
     */
     @PostMapping(value = "/service-discount")
     public void setServiceDiscount(@RequestBody Map<String,String> body) {
+                String adminEmail = body.get("adminEmail");
+                String password = body.get("password");
+
+                if(! checkAdminAccount(adminEmail, password)){
+                    throw new IllegalAccessError("admin account not valid");
+                }
+
                 String serviceName = body.get("serviceName");
-                 double amount = Double.parseDouble(body.get("amount"));
+                double amount = Double.parseDouble(body.get("amount"));
 
                 if (amount < 0) 
                     throw new IllegalArgumentException("Invalid amount value has been entered");
@@ -110,7 +120,6 @@ public class DiscountController {
             throw new IllegalAccessError("Service does not exist\n");
     }
 
-   
 
     private double verifyOverallDiscount(String userEmail, String password, String serviceName) throws IllegalAccessError {
         // check if account exists.
@@ -131,9 +140,19 @@ public class DiscountController {
         if (!foundService)
             throw new IllegalAccessError("Service does not exist");
 
-        if (accountsFetcher.getAccount(userEmail, password).getTransactions().size() == 0 && Discount.getStaticOverAllDiscount() > servicesDB.get(i).getDiscount().getServiceDiscount())
+        if (accountsFetcher.getAccount(userEmail, password).getTransactions().size() == 0 && 
+            Discount.getStaticOverAllDiscount() < servicesDB.get(i).getDiscount().getServiceDiscount())
             return Discount.getStaticOverAllDiscount();
         else
             return servicesDB.get(i).getDiscount().getServiceDiscount();
     }
+
+	private boolean checkAdminAccount(String adminEmail , String password){
+		AdminAccount adminAccount = accountsFetcher.getAdminAccount(adminEmail);
+		if(adminAccount==null)
+			return false;
+		if(! adminAccount.getPassword().equals(password))
+			return false;
+		return true;
+	}    
 }

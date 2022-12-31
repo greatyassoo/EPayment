@@ -75,6 +75,7 @@ public class Authenticator implements AccountAuthentication{
         if(!authenticateSignup(account)) 
             throw new IllegalArgumentException("Account Exists");
 
+        account.init();
         accountsFetcher.signUp(account);
         return new ResponseEntity<>(true,HttpStatus.ACCEPTED);
     }

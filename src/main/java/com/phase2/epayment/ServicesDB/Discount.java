@@ -14,8 +14,8 @@ public class Discount {
     }
 
     public Discount(){
-        this.serviceDiscount = 0;
-        overAllDiscount = 0;
+        this.serviceDiscount = 1;
+        overAllDiscount = 1;
     }
     
     // getters

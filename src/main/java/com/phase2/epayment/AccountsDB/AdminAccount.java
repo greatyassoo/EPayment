@@ -3,7 +3,7 @@ package com.phase2.epayment.AccountsDB;
 public class AdminAccount{
     protected String adminEmail;
     protected String adminPassword;
-    AdminAccount(String adminEmail , String adminPassword){
+    public AdminAccount(String adminEmail , String adminPassword){
         this.adminEmail = adminEmail;
         this.adminPassword = adminPassword;
     }

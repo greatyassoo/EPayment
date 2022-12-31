@@ -7,8 +7,8 @@ public class Account {
 	private String phoneNumber;
 	private String password;
 	private Double walletBalance = 0.0;
-	private LinkedList<Transaction> transactions;
-	private LinkedList<Integer> refundRequests;
+	private LinkedList<Transaction> transactions ;
+	private LinkedList<Integer> refundRequests ;
 
 	public Account(){};
 
@@ -17,10 +17,11 @@ public class Account {
 		this.email = email;
 		this.password = password;
 		this.phoneNumber = phoneNumber;
-		this.transactions = new LinkedList<Transaction>();
-		this.refundRequests = new LinkedList<Integer>();
 	}
-	
+	public void init(){
+		transactions = new LinkedList<>();
+		refundRequests = new LinkedList<>();
+	}
 	// setters
 	public void setUserName(String name){this.name = name;}
 	public void setEmail(String email) {this.email = email;}

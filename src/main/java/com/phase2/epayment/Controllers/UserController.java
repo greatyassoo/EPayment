@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.phase2.epayment.AccountsDB.*;
 import com.phase2.epayment.AccountsDB.Transaction.TYPE;
+import com.phase2.epayment.Payment.CreditPayment;
+import com.phase2.epayment.Payment.PaymentType;
 import com.phase2.epayment.ServicesDB.*;
 
 @RestController
@@ -45,20 +47,20 @@ public class UserController extends ServicesController {
 
         String userEmail = body.get("userEmail");
         String password = body.get("password");
-        String CCN = body.get("CCN");
-        String PIN = body.get("PIN");
         Double amount = Double.parseDouble(body.get("amount"));
         
         Account account = getAccount(userEmail, password);
+        if(account==null)
+            throw new IllegalAccessError("Account doesn't exist.");
+
         try {
-            if (!CCN.matches("-?\\d+(\\.\\d+)?") || 
-            CCN.length() != 16 || PIN.length() != 4 || 
-            !PIN.matches("-?\\d+(\\.\\d+)?") ||
-            amount<=0)
+            PaymentType credit = new CreditPayment();
+            if(!credit.Pay(body))
                 throw new IllegalAccessError("Wrong info provided.");
+
             account.setWalletBalance(account.getWalletBalance() + amount);
-            account.addTransaction(
-                    new Transaction(Transaction.TYPE.TOP_UP, "Recharge", "CreditCard","CreditCard", "", amount, 0));
+            account.addTransaction(new Transaction(Transaction.TYPE.TOP_UP, "Recharge",
+                        "CreditCard","CreditCard", "", amount, 0));
             return true;
         } catch (Exception e) {
             throw new IllegalAccessError("Transaction failed.");
@@ -67,10 +69,10 @@ public class UserController extends ServicesController {
     
     /**
     *
-    * searches and returns service provided
+    * searches and returns service(s) provided
     *
     * @param serviceName the name of the service
-    * @return true if funding process is succesful
+    * @return list of services in the system
     * @throws IlegallAccessError if no match is found
     *
     */
@@ -88,7 +90,7 @@ public class UserController extends ServicesController {
     *
     * @param userEmail the email of the user
     * @param password the password of the user
-    * @return linkedList of type Transaction
+    * @return list of transactions of the account provided
     * @throws IlegallAccessError if account not found
     *
     */
@@ -121,8 +123,6 @@ public class UserController extends ServicesController {
         return refundRequests;
     }
 
-
-
     /**
     *
     * creates and adds a new refund request to provided account
@@ -147,12 +147,15 @@ public class UserController extends ServicesController {
         int transactionID = Integer.parseInt(body.get("transactionID"));
         
         Account account = getAccount(userEmail, password);
+        if(account==null){
+            throw new IllegalAccessError("Account doesn't exist.");
+        }
 
         if(account.getRefundRequests().contains(transactionID))
             throw new IllegalAccessError("Transaction already added to refund request.");
     
         if(account.getTransaction(transactionID).getType().equals(TYPE.TOP_UP)){
-            throw new IllegalAccessError("You cannot refund a top up request.");
+            throw new IllegalAccessError("You cannot refund a top up transaction.");
         }
         account.addRefundRequest(transactionID); 
         return true;

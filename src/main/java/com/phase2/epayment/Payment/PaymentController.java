@@ -1,5 +1,6 @@
-package com.phase2.epayment.Controllers;
+package com.phase2.epayment.Payment;
 
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,11 +12,7 @@ import com.phase2.epayment.AccountsDB.Account;
 import com.phase2.epayment.AccountsDB.AccountsFetcher;
 import com.phase2.epayment.AccountsDB.Transaction;
 import com.phase2.epayment.AccountsDB.Transaction.TYPE;
-import com.phase2.epayment.Payment.CashPayment;
-import com.phase2.epayment.Payment.CreditPayment;
-import com.phase2.epayment.Payment.DiscountController;
-import com.phase2.epayment.Payment.PaymentType;
-import com.phase2.epayment.Payment.WalletPayment;
+import com.phase2.epayment.Controllers.DiscountController;
 import com.phase2.epayment.ServicesDB.Service;
 import com.phase2.epayment.ServicesDB.ServicesDB;
 
@@ -33,10 +30,11 @@ public class PaymentController {
         this.servicesDB = servicesDB;
     }
 
+    //TODO docs
     // body structure
-    //[ userName,password,service,serviceProvider,paymentMethod,phoneNumber,amount,{payment type data} ] 
-    @PostMapping(value = "/pay")
-    public boolean pay(@RequestBody Map<String,String> body) throws Exception{
+    //[ userEmail,password,service,serviceProvider,paymentMethod,phoneNumber,amount,{payment type data} ] 
+    @PostMapping(value = "/payment")
+    public int pay(@RequestBody Map<String,String> body) throws Exception{
 
         String userEmail = body.get("userEmail");
         String password = body.get("password");
@@ -77,16 +75,25 @@ public class PaymentController {
                 break;
         }    
 
-        if(!service.getPaymentTypes().contains(paymentType))
+        LinkedList<PaymentType> acceptedPaymentTypes = service.getPaymentTypes();
+        boolean found=false;
+        for(int i=0 ; i<acceptedPaymentTypes.size() ; i++){
+            if(acceptedPaymentTypes.get(i).getClass().getSimpleName().equals(paymentType.getClass().getSimpleName())){
+                found=true;
+                break;
+            }
+        }
+
+        if(!found)
             throw new IllegalAccessError("Payment method not allowed.");
 
         if(!paymentType.Pay(body))
-            return false;
+            throw new IllegalAccessError("Error with provided data.");
         
         if(method.toLowerCase()=="wallet")
             account.setWalletBalance(account.getWalletBalance()-(Double.parseDouble(body.get("amount"))));
         
         account.addTransaction(new Transaction(TYPE.PAYMENT, serviceName, serviceProviderName, method, phoneNumber, Double.parseDouble(body.get("amount")), discount));
-        return true;
+        return account.getTransaction(account.getTransactions().size()-1).getTransactionID();
     }   
 }
