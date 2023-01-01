@@ -10,19 +10,14 @@ import com.phase2.epayment.Payment.CreditPayment;
 import com.phase2.epayment.Payment.PaymentType;
 import com.phase2.epayment.Payment.WalletPayment;
 
-
 @Component
-public class ServicesDB {
+public class ServicesFetcher {
     
     private LinkedList<Service> services;
     
-    public ServicesDB(LinkedList<Service> services) {
-        this.services = services;
-    }
+    public ServicesFetcher(LinkedList<Service> services) {this.services = services;}
 
-    public int size(){return services.size();}
-    public Service get(int index){return services.get(index);}
-    public LinkedList<Service> getAllServices(){return this.services;}
+    //returns all services that match the serviceName
     public LinkedList<Service> getServices(String serviceName){
         LinkedList<Service> temp = new LinkedList<>();
         for (int i = 0; i < services.size(); i++){

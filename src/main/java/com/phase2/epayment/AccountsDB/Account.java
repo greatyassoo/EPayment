@@ -22,6 +22,7 @@ public class Account {
 		transactions = new LinkedList<>();
 		refundRequests = new LinkedList<>();
 	}
+	
 	// setters
 	public void setUserName(String name){this.name = name;}
 	public void setEmail(String email) {this.email = email;}
@@ -37,18 +38,26 @@ public class Account {
 	public String getPhoneNumber() {return this.phoneNumber;}
 	public String getPassword() {return this.password;}	
 	public Double getWalletBalance() {return this.walletBalance;}
-	public Transaction getTransaction(int indx) {return transactions.get(indx);}
-	public LinkedList<Transaction> getTransactions() {return this.transactions;}
+	public Transaction getTransaction(int transactionID) {
+		for(int i=0 ; i<this.transactions.size() ; i++){
+			if(this.transactions.get(i).getTransactionID()==transactionID)
+				return this.transactions.get(i);
+		}
+		return null;
+	}
+	public LinkedList<Transaction> getAllTransactions() {return this.transactions;}
 	public LinkedList<Integer> getRefundRequests() {return this.refundRequests;}
 
-	public boolean removeTransaction(int index){
-		try{transactions.remove(index);}
+	public boolean removeTransaction(int transactionID){
+		try{transactions.remove(getTransaction(transactionID));}
 		catch(Exception e){return false;}
 		return true;
 	}
-	public boolean removeRefundRequest(int index){
-		try{refundRequests.remove(index);}
-		catch(Exception e){return false;}
+	public boolean removeRefundRequest(int transactionID){
+		try{
+			int index = transactions.indexOf(getTransaction(transactionID));
+			refundRequests.remove(index);
+		}catch(Exception e){return false;}
 		return true;
 	}
 }

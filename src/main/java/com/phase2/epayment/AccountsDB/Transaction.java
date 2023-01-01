@@ -10,7 +10,8 @@ public class Transaction {
     private TYPE type;
     private int transactionID;
 
-    public Transaction(TYPE type, String service, String serviceProvider, String paymentMethod, String phoneNumber, double amount, double discount) {
+    public Transaction(TYPE type, String service, String serviceProvider, 
+            String paymentMethod, String phoneNumber, double amount, double discount) {
         this.type = type;
         this.service = service; 
         this.serviceProvider = serviceProvider;
@@ -30,7 +31,6 @@ public class Transaction {
     public void setType(TYPE type) {this.type = type;}
     public void setPhoneNumber(String phoneNumber){this.phoneNumber = phoneNumber;}
     
-    
     //getters
     public TYPE getType() {return this.type;}
     public String getService() {return this.service;}
@@ -40,5 +40,4 @@ public class Transaction {
     public double getDiscount() {return this.discount;}
     public String getPhoneNumber() {return this.phoneNumber;}
     public int getTransactionID() {return this.transactionID;}
-    public String getAllInfo() {return type+":"+transactionID+":"+service+":"+serviceProvider+":"+amount+":"+paymentMethod+":"+discount;}
 }

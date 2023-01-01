@@ -8,14 +8,15 @@ public class Discount {
     private double serviceDiscount;
     private static double overAllDiscount;
     
-    public Discount(double serviceDiscount, double overallDiscount){
-        this.serviceDiscount = serviceDiscount;
-        overAllDiscount = overallDiscount;
-    }
 
     public Discount(){
         this.serviceDiscount = 1;
         overAllDiscount = 1;
+    }
+
+    public Discount(double serviceDiscount, double overallDiscount){
+        this.serviceDiscount = serviceDiscount;
+        overAllDiscount = overallDiscount;
     }
     
     // getters

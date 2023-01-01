@@ -16,12 +16,12 @@ public class Authenticator implements AccountAuthentication{
     @Autowired
     private AccountsFetcher accountsFetcher;
 
-
     Authenticator(AccountsFetcher accountsFetcher){
         this.accountsFetcher=accountsFetcher;
     }
 
-    private int authenticateSignIn(String userEmail, String password) { // -1 for error, 0 for admin, 1 for user.
+    // -1 for error, 0 for admin, 1 for user.
+    private int authenticateSignIn(String userEmail, String password) { 
         if (accountsFetcher.getAdminAccount(userEmail)!=null)
             return 0; // admin
 
@@ -44,7 +44,8 @@ public class Authenticator implements AccountAuthentication{
      *
      * @param userEmail the email of the user
      * @param password the password of the user
-     * @return response entity of type account if account exists
+     * @return returns user account if credential are for a user ---
+               returns HttpStatus.Accepted if credentials are for an admin.
      * @throws IlegallAccessError if account does not exist
      */
     @GetMapping(value = "/sign-in")
@@ -61,11 +62,12 @@ public class Authenticator implements AccountAuthentication{
     }
     
      /**
-     * signs up account 
+     * signs up and adds account to the system database 
      *
      * @param account the account that will be added to the systems
-     * @return response entity of type boolean
+     * @return true if account is signed up and added succesfully, false otherwise
      * @throws IllegalArgumentException if account exists
+     *
      */
     @PostMapping(value = "/sign-up")
     public ResponseEntity<Boolean> signUp(@RequestBody Account account) throws IllegalArgumentException {

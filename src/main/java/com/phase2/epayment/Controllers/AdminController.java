@@ -14,16 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/admin") // this means any mapping inside this class starts with "/admin"
+@RequestMapping("/admin") 
 public class AdminController extends ServicesController {
-	private AccountsFetcher accountsFetcher;
 
-	AdminController(ServicesDB servicesDB, AccountsFetcher accountsFetcher){
-		this.servicesDB = servicesDB;
+	AdminController(ServicesFetcher servicesFetcher, AccountsFetcher accountsFetcher){
+		this.servicesFetcher = servicesFetcher;
 		this.accountsFetcher = accountsFetcher;
 	}
 
-	/**
+	/** done
 	* add service provider to a specified service
 	*
 	* @param adminEmail admin email/user value
@@ -64,7 +63,7 @@ public class AdminController extends ServicesController {
 		catch (Exception e) {return false;}
 	}
 	
-	/**
+	/** done
 	* returns all user accounts saved in the system database
 	*
 	* @param adminEmail admin email/user value
@@ -80,43 +79,43 @@ public class AdminController extends ServicesController {
 		return accountsFetcher.getAllAccounts();
 	}
 
-	/**
+	/** done
 	* returns all specified user transactions 
 	*
 	* @param adminEmail admin email/user value
 	* @param password admin password
 	* @param userEmail email of the account to be searched
-	* @return accounts saved in the system.
+	* @return transactions of specified user account
 	* @throws IllegalAccessError if admin credentials are incorrect
 	* @throws IllegalAccessError if account does not exist
 	*
 	*/
 	@GetMapping(value = "/user-transactions")
-	public LinkedList<Transaction> getAllAccountTransactions(@RequestParam("adminEmail") String adminEmail ,@RequestParam("password") String password
-	,@RequestParam("userEmail") String userEmail){	
-		if(! checkAdminAccount(adminEmail, password))
+	public LinkedList<Transaction> getAllAccountTransactions(@RequestParam("adminEmail") String adminEmail ,
+			@RequestParam("password") String password
+			,@RequestParam("userEmail") String userEmail){	
+		if(!checkAdminAccount(adminEmail, password))
 			throw new IllegalAccessError("admin account not valid");
 
 		try {
 			Account account = accountsFetcher.getAccount(userEmail);
-			LinkedList<Transaction> transactions = account.getTransactions();	
-			return transactions;
+			return account.getAllTransactions();	
 		} 
 		catch (Exception e) {throw new IllegalAccessError("Account doesn't exist.");}
 	}
 
-	/**
-	* returns all specified user transactions 
+	/** done
+	* returns all pending refund requests
 	*
 	* @param adminEmail admin email/user value
 	* @param password admin password
-	* @param userEmail email of the account to be searched
-	* @return accounts saved in the system.
+	* @return refund requests issued by all the users in the system.
 	* @throws IllegalAccessError if admin credentials are incorrect
-	* @throws IllegalAccessError if account does not exist
+	*
 	*/
 	@GetMapping(value = "/refund-requests")
-	public LinkedList<LinkedList<String>> getRefundRequests(@RequestParam("adminEmail") String adminEmail ,@RequestParam("password") String password){
+	public LinkedList<LinkedList<String>> getRefundRequests(@RequestParam("adminEmail") String adminEmail ,
+			@RequestParam("password") String password){
 		if(! checkAdminAccount(adminEmail, password))
 			throw new IllegalAccessError("Admin account not valid");
 
@@ -137,24 +136,24 @@ public class AdminController extends ServicesController {
 		return refundRequests;
 	}
 
-	/**
+	/** done
 	* a function where the admin chooses to accept or reject a specific account's refund request
 	*
 	* @param adminEmail admin email/user value
 	* @param password admin password
 	* @param userEmail email of the account that issued the requests
 	* @param answer the choice of wether to 'accept' ,'reject', or 'cancel'.
-	* @param service the service of the refund request
-	* @param amount the amount of the refunded transaction
+	* @param transactionID the id of the transaction
 	* @return 0: if transaction added succesfuly
 	*		 -1: if answer invalid
 	*		 -2: if transaction couldn't be found
 	*		 -3: if general error occurred
 	*		 -4: if answer is 'cancel'
+	* @throws IllegalAccessError if admin credentials are incorrect
 	*
 	* @note the parameters mentioned above are held in the argument "body" which is a map that holds key value pairs
     * of n parameters. The key is the parameter name and the value corresponds to the paremeter value. 
-    * ie: "serviceName": "Mobile Recharge Service" 	
+    * ie: "transactionID": "4"
 	*/
 	@PostMapping(value = "/refund-requests")
 	public int processRefundRequest(@RequestBody Map<String,String> body) {
@@ -172,35 +171,25 @@ public class AdminController extends ServicesController {
 			return -1;
 
 		String userEmail = body.get("userEmail");
-		// String service = body.get("service");
-		// double amount = Double.parseDouble(body.get("amount"));
+		int transactionID = Integer.parseInt(body.get("transactionID"));
 		Account account = accountsFetcher.getAccount(userEmail);
-		
 		if(account==null)
 			return -2;
-		
-		//TODO change to work with transactionID instead of serviceName and amount
+			
+		Transaction transaction = account.getTransaction(transactionID);
+		if(transaction==null)
+			return -2;
 
-		int transactionIndx = -1;
-		int refundIndx = -1;
-		
-		for(int i=0 ; i<account.getRefundRequests().size() ; i++){
-			if(account.getTransaction(account.getRefundRequests().get(i)).getService().equals(service) 
-				&& account.getTransaction(account.getRefundRequests().get(i)).getAmount() == amount){
-				transactionIndx = account.getRefundRequests().get(i);
-				refundIndx = i;
-				break;
-			}
+		if(answer.toLowerCase().equals("reject")){
+			account.addTransaction(new Transaction(Transaction.TYPE.REFUND_REJECTED, "Refund", "Admin",
+				"", "", 0, 0));
+			account.removeRefundRequest(transactionID);
 		}
-
-		if(answer.toLowerCase().equals("reject")&&transactionIndx!=-1){
-			account.addTransaction(new Transaction(Transaction.TYPE.REFUND_REJECTED, "Refund", "Admin", "", "", 0, 0));
-			account.removeRefundRequest(refundIndx);
-		}
-		else if(answer.toLowerCase().equals("accept")&&transactionIndx!=-1){
-			account.addTransaction(new Transaction(Transaction.TYPE.REFUND_ACCEPTED, "Refund", "Admin", "", "", -account.getTransaction(transactionIndx).getAmount(), 0));
-			account.setWalletBalance(account.getWalletBalance()+account.getTransaction(transactionIndx).getAmount());
-			account.removeRefundRequest(refundIndx);
+		else if(answer.toLowerCase().equals("accept")){
+			account.addTransaction(new Transaction(Transaction.TYPE.REFUND_ACCEPTED, "Refund", "Admin",
+				"", "", -transaction.getAmount(), 0));
+			account.setWalletBalance(account.getWalletBalance()+transaction.getAmount());
+			account.removeRefundRequest(transactionID);
 		}
 		else
 			return -3;
@@ -208,22 +197,43 @@ public class AdminController extends ServicesController {
 		return 0;
 	}
 
+	// TODO test
+	/** done
+	* a function where an admin adds a new admin account
+	*
+	* @param adminEmail admin email/user value
+	* @param password admin password
+	* @param newAdminEmail new admin email/user
+	* @param newPassword new admin password
+	* @return true if admin account succesfully added, false if NEW admin email already exists
+	* @throws IllegalAccessError if admin credentials are incorrect
+	*
+	* @note the parameters mentioned above are held in the argument "body" which is a map that holds key value pairs
+    * of n parameters. The key is the parameter name and the value corresponds to the paremeter value. 
+    * ie: "transactionID": "4" 	
+	*/
 	@PostMapping("/account")
 	public boolean registerAdmin(@RequestBody Map<String,String> body){
 		String adminEmail = body.get("adminEmail");
 		String password = body.get("password");
+		String newAdminEmail = body.get("newAdminEmail");
+		String newPassword = body.get("newPassword");
+
+		if(! checkAdminAccount(adminEmail, password))
+			throw new IllegalAccessError("admin account not valid");
 
 		if(accountsFetcher.getAdminAccount(adminEmail)!=null)
 			return false;
 		
-		accountsFetcher.addAdminAccount(new AdminAccount(adminEmail,password));
+		accountsFetcher.addAdminAccount(new AdminAccount(newAdminEmail,newPassword));
 		return true;
 	}
 	
 	private boolean checkServiceProviderNames(String serviceName,String serviceProviderName){
 		LinkedList <ServiceProvider> temp = getService(serviceName).getServiceProviders();
 		for(int i=0;i<temp.size();i++){
-			if(temp.get(i).getName().toLowerCase().equals(serviceProviderName.toLowerCase())){return true;}
+			if(temp.get(i).getName().toLowerCase().equals(serviceProviderName.toLowerCase()))
+				return true;
 		}
 		return false;
 	}

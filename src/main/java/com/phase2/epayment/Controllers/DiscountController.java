@@ -3,8 +3,10 @@ package com.phase2.epayment.Controllers;
 import java.util.LinkedList;
 import java.util.Map;
 
-import com.phase2.epayment.ServicesDB.*;
 import com.phase2.epayment.AccountsDB.AccountsFetcher;
+import com.phase2.epayment.ServicesDB.Discount;
+import com.phase2.epayment.ServicesDB.Service;
+import com.phase2.epayment.ServicesDB.ServicesFetcher;
 import com.phase2.epayment.AccountsDB.AdminAccount;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/discount")
 public class DiscountController {
     private AccountsFetcher accountsFetcher;
-    private ServicesDB servicesDB;
+    private ServicesFetcher servicesFetcher;
 
-    DiscountController(AccountsFetcher accountsFetcher, ServicesDB servicesDB) {
+    DiscountController(AccountsFetcher accountsFetcher, ServicesFetcher servicesFetcher) {
         this.accountsFetcher = accountsFetcher;
-        this.servicesDB = servicesDB;
+        this.servicesFetcher = servicesFetcher;
     }
 
     /**
@@ -42,12 +44,15 @@ public class DiscountController {
                 return verifyOverallDiscount(userEmail, password, serviceName);
     }
 
-    //TODO added admin checking 
+
     /**
     * sets the overall discount with given amount
     *
+    * @param adminEmail admin email/user value
+	* @param password admin password
     * @param amount takes the key "amount" which holds overall discount value
     * @throws IllegalArgumentException if amount value provided is less than zero
+    * @throws IllegalAccessError if admin credentials are incorrect
     *
     * @note the parameters mentioned above are held in the argument "body" which is a map that holds key value pairs
     * of n parameters. The key is the parameter name and the value corresponds to the paremeter value. 
@@ -69,11 +74,17 @@ public class DiscountController {
         Discount.setOverAllDiscount(amount);
     }
 
-    //TODO rename me pls
-    @GetMapping(value = "/discount")
-    public Discount checkServiceDiscount(@RequestParam("serviceName") String serviceName) {
+    /**
+    * returns service discount of the provided service
+    *
+    * @param serviceName the name of the service that discount will be returned
+    * @throws IllegalAccessError if provided service name does not exist
+    * 
+    */
+    @GetMapping(value = "/service-discount")
+    public Discount getServiceDiscount(@RequestParam("serviceName") String serviceName) {
         
-        LinkedList<Service> services = servicesDB.getServices(serviceName);
+        LinkedList<Service> services = servicesFetcher.getServices(serviceName);
 
         if(services!=null)
             return services.get(0).getDiscount();
@@ -82,17 +93,21 @@ public class DiscountController {
     }
 
 
-    //TODO added admin checking 
+
     /**
-    * sets the service discount of the given service discount with given amount
+    * sets the service discount of the given service with given amount
     *
+    * @param adminEmail admin email/user value
+	* @param password admin password
     * @param serviceName the name of the service that discount will be set
     * @param amount new service discount value
     * @throws IllegalAccessError if provided service name does not exist
     * @throws IllegalArgumentException if amount value provided is less than zero
+    * @throws IllegalAccessError if admin credentials are incorrect
+    *
     *
     * @note the parameters mentioned above are held in the argument "body" which is a map that holds key value pairs
-    * of n parameters. The key is the parameter name and the value corresponds to the paremeter value. 
+    * of n parameters. The key is the parameter name and the value corresponds to the parameter value. 
     * ie: "serviceName": "Mobile Recharge Service" 
     */
     @PostMapping(value = "/service-discount")
@@ -110,7 +125,7 @@ public class DiscountController {
                 if (amount < 0) 
                     throw new IllegalArgumentException("Invalid amount value has been entered");
 
-                LinkedList<Service> services = servicesDB.getAllServices();
+                LinkedList<Service> services = servicesFetcher.getServices("");
                 for (int i = 0; i < services.size(); i++) {
                     if (services.get(i).getName().equals(serviceName)){
                         services.get(i).getDiscount().setServiceDiscount(amount);
@@ -126,25 +141,16 @@ public class DiscountController {
         if ((accountsFetcher.getAccount(userEmail, password) == null))
             throw new IllegalAccessError("Account does not exist");
         
-        LinkedList<Service> services = servicesDB.getAllServices();
+        Service service ;
+        try{service = servicesFetcher.getServices(serviceName).get(0);}
+        catch(Exception e ){throw new IllegalAccessError("Error with service name");}
+        
 
-        boolean foundService = false;
-        int i = 0;
-        for (i = 0; i < services.size(); i++) {
-            if (services.get(i).getName().equals(serviceName)){
-                foundService = true;
-                break;   
-            }
-        }
-        // if service not found
-        if (!foundService)
-            throw new IllegalAccessError("Service does not exist");
-
-        if (accountsFetcher.getAccount(userEmail, password).getTransactions().size() == 0 && 
-            Discount.getStaticOverAllDiscount() < servicesDB.get(i).getDiscount().getServiceDiscount())
+        if (accountsFetcher.getAccount(userEmail, password).getAllTransactions().size() == 0 && 
+            Discount.getStaticOverAllDiscount() < service.getDiscount().getServiceDiscount())
             return Discount.getStaticOverAllDiscount();
         else
-            return servicesDB.get(i).getDiscount().getServiceDiscount();
+            return service.getDiscount().getServiceDiscount();
     }
 
 	private boolean checkAdminAccount(String adminEmail , String password){

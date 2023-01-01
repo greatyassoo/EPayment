@@ -37,6 +37,6 @@ public class Service {
     //getters
     public String getName() {return name;}
     public LinkedList<ServiceProvider> getServiceProviders(){return serviceProviders;}
-    public LinkedList<PaymentType> getPaymentTypes(){return acceptedPayment;}
+    public LinkedList<PaymentType> getAllPaymentTypes(){return acceptedPayment;}
     public Discount getDiscount() {return discount;}
 }

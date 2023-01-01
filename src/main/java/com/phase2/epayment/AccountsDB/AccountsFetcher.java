@@ -17,9 +17,9 @@ public class AccountsFetcher implements AccountAuthentication{
         adminAccounts.addLast(new AdminAccount("admin","admin"));
     }
 
-    public ResponseEntity<Account> signIn(String uName , String password){ 
+    public ResponseEntity<Account> signIn(String userEmail , String password){ 
         for(int i=0 ; i<accounts.size() ; i++){
-            if(accounts.get(i).getUserEmail().equals(uName) && accounts.get(i).getPassword().equals(password)){
+            if(accounts.get(i).getUserEmail().equals(userEmail) && accounts.get(i).getPassword().equals(password)){
                 return new ResponseEntity<>(accounts.get(i),HttpStatus.OK);
             }
         }
@@ -55,8 +55,6 @@ public class AccountsFetcher implements AccountAuthentication{
         return temp;
     }
 
-    public Account getAccount(int index) {return accounts.get(index);}
-
     public AdminAccount getAdminAccount(String adminEmail) {
         AdminAccount temp=null;
         for(int i=0 ; i<adminAccounts.size() ; i++){
@@ -71,6 +69,4 @@ public class AccountsFetcher implements AccountAuthentication{
     public void addAdminAccount(AdminAccount adminAccount){adminAccounts.addLast(adminAccount);}
 
     public LinkedList<Account> getAllAccounts(){return this.accounts;}
-
-    public int getSize() {return accounts.size();}
 }
