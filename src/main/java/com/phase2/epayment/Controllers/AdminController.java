@@ -197,7 +197,6 @@ public class AdminController extends ServicesController {
 		return 0;
 	}
 
-	// TODO test
 	/** done
 	* a function where an admin adds a new admin account
 	*

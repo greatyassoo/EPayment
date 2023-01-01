@@ -5,7 +5,7 @@ boundary external_interface as external_interface
 control EPaymentAPI as EPaymentAPI
 database AccountsFetcher as AccountsFetcher
 entity Account as Account
-entity transaction as transaction
+entity Transaction as Transaction
 admin->external_interface:showRefundRequests
 external_interface->EPaymentAPI:{GET} getRefundRequests(adminEmail,password)
 EPaymentAPI->AccountsFetcher:getAllAccounts()
@@ -24,13 +24,16 @@ external_interface->EPaymentAPI:{POST} processRefundRequest(body)
 EPaymentAPI->AccountsFetcher:getAccount(userEmail)
 AccountsFetcher-->EPaymentAPI:returns account
 EPaymentAPI->Account:getTransaction(transacionID)
-Account-->EPaymentAPI:returns transaction
-EPaymentAPI->Account:addTransaction(new transaction with type refund and \n-ve the ammount of the accepted transaction)
-EPaymentAPI->transaction:getAmount()
-transaction-->EPaymentAPI:returns amount
+Account-->EPaymentAPI:returns Transaction
+EPaymentAPI->Account:addTransaction(new Transaction with type refund and \n-ve the ammount of the accepted Transaction)
+EPaymentAPI->Transaction:getAmount()
+Transaction-->EPaymentAPI:returns amount
 EPaymentAPI->Account:getWalletBalance()
 Account-->EPaymentAPI:returns walletBalance
 EPaymentAPI->Account:setWalletBalance(amount+walletBalance)
-EPaymentAPI->Account:removeRefundRequest(transactionID)
+EPaymentAPI->Account:removeRefundRequest(TransactionID)
+alt if any get operation fails
+    EPaymentAPI-->external_interface:returns error
+end
 EPaymentAPI-->external_interface:returns 0
 @enduml

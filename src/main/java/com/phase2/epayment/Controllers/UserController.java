@@ -48,7 +48,7 @@ public class UserController extends ServicesController {
         String password = body.get("password");
         Double amount = Double.parseDouble(body.get("amount"));
         
-        Account account = getAccount(userEmail, password);
+        Account account = accountsFetcher.getAccount(userEmail, password);
         if(account==null)
             throw new IllegalAccessError("Account doesn't exist.");
 
@@ -98,7 +98,7 @@ public class UserController extends ServicesController {
     public LinkedList<Transaction> getTransactions(@RequestParam("userEmail") String userEmail,
             @RequestParam("password") String password) {
         try{
-            Account account = getAccount(userEmail, password);
+            Account account = accountsFetcher.getAccount(userEmail, password);
             return account.getAllTransactions();
         }catch(Exception e){};
         return null;
@@ -117,7 +117,7 @@ public class UserController extends ServicesController {
     @GetMapping(value = "/refund-request")
     public LinkedList<Transaction> getRefundRequests(@RequestParam("userEmail") String userEmail,
             @RequestParam("password") String password) {
-        Account account = getAccount(userEmail, password);
+        Account account = accountsFetcher.getAccount(userEmail, password);
         LinkedList<Integer> refundRequestsIndx = account.getRefundRequests();
         LinkedList<Transaction> refundRequests = new LinkedList<>();
         for (int i = 0; i < refundRequestsIndx.size(); i++) {
@@ -149,7 +149,7 @@ public class UserController extends ServicesController {
         String password = body.get("password");
         int transactionID = Integer.parseInt(body.get("transactionID"));
         
-        Account account = getAccount(userEmail, password);
+        Account account = accountsFetcher.getAccount(userEmail, password);
         if(account==null){
             throw new IllegalAccessError("Account doesn't exist.");
         }

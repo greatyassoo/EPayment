@@ -1,0 +1,401 @@
+{
+	"info": {
+		"_postman_id": "3426b561-f2f5-41a2-b6fd-ca3203682840",
+		"name": "Phase-2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25094392"
+	},
+	"item": [
+		{
+			"name": "SignUp",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.request.headers.add({key: 'Authorization', value: 'SWSS xxxxxxxxxxxxxxxx' }) \r",
+							"pm.request.headers.remove('Postman-Token')\r",
+							"pm.request.headers.remove('Cache-Control')"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\":\"ayman\",\r\n    \"email\":\"ayman@fci.com\",\r\n    \"phoneNumber\":\"010101010101\",\r\n    \"password\":\"ayman\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/sign-up",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignIn",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/auth/sign-in?userEmail=ayman@fci.com&password=ayman",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"sign-in"
+					],
+					"query": [
+						{
+							"key": "userEmail",
+							"value": "ayman@fci.com"
+						},
+						{
+							"key": "password",
+							"value": "ayman"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getService",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/user/service?serviceName=mobile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"service"
+					],
+					"query": [
+						{
+							"key": "serviceName",
+							"value": "mobile"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userEmail\":\"ayman@fci.com\",\r\n    \"password\":\"ayman\",\r\n    \"serviceName\":\"Mobile Recharge Service\",\r\n    \"serviceProvider\":\"Vodafone\",\r\n    \"paymentMethod\":\"credit\",\r\n    \"phoneNumber\":\"01034567876\",\r\n    \"amount\":\"100\",\r\n    \"CCN\":\"1234123412341234\",\r\n    \"PIN\":\"5436\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/transaction/payment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transaction",
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addRefundRequest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userEmail\":\"ayman@fci.com\",\r\n    \"password\":\"ayman\",\r\n    \"transactionID\":\"0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/refund-request",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"refund-request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fundAccount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userEmail\":\"ayman@fci.com\",\r\n    \"password\":\"ayman\",\r\n    \"CCN\":\"1234123412341234\",\r\n    \"PIN\":\"1234\",\r\n    \"amount\":\"70\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/user/fund",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"fund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getServiceDiscount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/discount/service-discount?serviceName=Mobile Recharge Service",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"discount",
+						"service-discount"
+					],
+					"query": [
+						{
+							"key": "serviceName",
+							"value": "Mobile Recharge Service"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addServiceProvider",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"adminEmail\":\"admin\",\r\n    \"password\":\"admin\",\r\n    \"serviceName\":\"Mobile Recharge Service\",\r\n    \"serviceProviderName\":\"Zain\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/service-provider",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"service-provider"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "setOverAllDiscount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"adminEmail\":\"admin\",\r\n    \"password\":\"admin\",\r\n    \"amount\":\"0.9\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/discount/overall-discount",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"discount",
+						"overall-discount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "setServiceDiscount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"adminEmail\":\"admin\",\r\n    \"password\":\"admin\",\r\n    \"serviceName\":\"Mobile Recharge Service\",\r\n    \"amount\":\"0.8\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/discount/service-discount",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"discount",
+						"service-discount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllAccountTransactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/admin/user-transactions?adminEmail=admin&password=admin&userEmail=ayman@fci.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"user-transactions"
+					],
+					"query": [
+						{
+							"key": "adminEmail",
+							"value": "admin"
+						},
+						{
+							"key": "password",
+							"value": "admin"
+						},
+						{
+							"key": "userEmail",
+							"value": "ayman@fci.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRefundRequests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/admin/refund-requests?adminEmail=admin&password=admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"refund-requests"
+					],
+					"query": [
+						{
+							"key": "adminEmail",
+							"value": "admin"
+						},
+						{
+							"key": "password",
+							"value": "admin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "processRefundRequest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"adminEmail\":\"admin\",\r\n    \"password\":\"admin\",\r\n    \"answer\":\"accept\",\r\n    \"userEmail\":\"ayman@fci.com\",\r\n    \"transactionID\":\"0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/refund-requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"refund-requests"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

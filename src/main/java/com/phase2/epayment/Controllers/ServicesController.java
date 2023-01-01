@@ -2,7 +2,6 @@ package com.phase2.epayment.Controllers;
 
 import java.util.LinkedList;
 
-import com.phase2.epayment.AccountsDB.Account;
 import com.phase2.epayment.AccountsDB.AccountsFetcher;
 import com.phase2.epayment.ServicesDB.*;
 
@@ -23,10 +22,6 @@ public abstract class ServicesController {
         try { return servicesFetcher.getServices(serviceName).get(0);}
         catch (Exception e) {}
         return null;
-    }
-
-    public Account getAccount(String userEmail, String password) {
-        return accountsFetcher.getAccount(userEmail, password);
     }
 
 }

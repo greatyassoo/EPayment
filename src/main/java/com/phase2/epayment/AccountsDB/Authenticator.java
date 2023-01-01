@@ -16,9 +16,7 @@ public class Authenticator implements AccountAuthentication{
     @Autowired
     private AccountsFetcher accountsFetcher;
 
-    Authenticator(AccountsFetcher accountsFetcher){
-        this.accountsFetcher=accountsFetcher;
-    }
+    Authenticator(AccountsFetcher accountsFetcher){this.accountsFetcher=accountsFetcher;}
 
     // -1 for error, 0 for admin, 1 for user.
     private int authenticateSignIn(String userEmail, String password) { 

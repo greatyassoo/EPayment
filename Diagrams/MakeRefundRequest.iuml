@@ -1,5 +1,22 @@
 @startuml makeRefundRequest
 
 actor user
+boundary external_interface as external_interface
+control EPaymentAPI as EPaymentAPI
+database AccountsFetcher as AccountsFetcher
+entity Account as Account
 
+
+user->external_interface:addRefund()
+external_interface->EPaymentAPI:{POST} addRefundRequest(body)
+EPaymentAPI->AccountsFetcher:getAccount(userEmail,password)
+AccountsFetcher-->EPaymentAPI:returns account
+alt if transaction already in refund requests
+    EPaymentAPI-->external_interface:Transaction already added to refund request.
+end
+alt if transaction type is top_up
+    EPaymentAPI-->external_interface:You cannot refund a top up transaction
+end
+EPaymentAPI->Account:addRefundReques(transactionID)
+EPaymentAPI-->external_interface:returns true
 @enduml

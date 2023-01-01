@@ -1,0 +1,37 @@
+@startuml adminAddServiceProvider
+
+actor admin
+boundary external_Interface
+control adminController
+entity accountsFetcher
+entity service
+
+admin -> external_Interface : add service provider
+external_Interface -> adminController : {POST} addServiceProvider(body)
+
+alt !checkAdminAccount(adminEmail, password)
+    adminController -> accountsFetcher : getAdminAccount(adminEmail)
+    alt adminAccount == null
+        accountsFetcher --> adminController : return false
+    end
+    alt !adminAccount.getPassword().equals(password)
+        accountsFetcher --> adminController : return false
+    end
+
+    adminController --> external_Interface : throw new IllegalAccessError("admin account not valid")
+    else 
+         accountsFetcher --> adminController : return true
+
+    alt getService(serviceName)==null
+        adminController --> external_Interface : return false
+    end
+    alt checkServiceProviderNames(serviceName,serviceProviderName) == true
+        adminController --> external_Interface : return false
+    end    
+        adminController -> service : getService(serviceName)
+        service -> service : addServiceProvider(new ServiceProvider(serviceProviderName))
+        adminController --> external_Interface : return true
+
+end
+
+@enduml
